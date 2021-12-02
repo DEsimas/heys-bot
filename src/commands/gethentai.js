@@ -43,6 +43,7 @@ export default function gethentai(message, args) {
     });
 
     if(amount > 300) amount = 300;
+    if(amount < 1) amount = 1;
 
     try {
     Booru.search(site, tags, { limit: amount, random: true }).then(posts => {

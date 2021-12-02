@@ -23,7 +23,6 @@ export default function nhentai(message, args) {
     function sendPages(doujin) {
         let embeds = [];
         doujin.pages.forEach((el, index) => {
-            console.log(el.url);
             const embed = new Discord.MessageEmbed()
                 .setImage(el.url)
                 .setColor("#202225");

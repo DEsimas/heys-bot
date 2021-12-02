@@ -6,6 +6,7 @@
     "start": "node ./src/index.js"
   },
   "dependencies": {
+    "booru": "^2.5.0",
     "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
     "nhentai": "^3.0.0"

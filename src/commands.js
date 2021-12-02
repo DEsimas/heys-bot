@@ -1,6 +1,6 @@
 import help from "./commands/help.js";
 import nhentai from "./commands/nhentai.js";
-import rule34 from "./commands/rule.34.js";
+import gethentai from "./commands/gethentai.js";
 
 export default [
     {
@@ -9,13 +9,13 @@ export default [
         out: help
     },
     {
-        name: ["nhentai", "gethentai", "getdoujin"],
+        name: ["nhentai", "getdoujin"],
         description: "fetch doujin from nhentai.net using its code, you can also pass \"random\" to get random doujin",
         out: nhentai
     },
     {
-        name: ["rule34", "r34"],
-        description: "fetch pictures from rule34.xxx using tags",
-        out: rule34
+        name: ["gethentai", "get"],
+        description: "fetch pictures from huge amount of interesting sites. State { e621, e926, hypnohub, danbooru, konac, konan, yandere, gelbooru, rule34, safebooru, tbib, xbooru, paheal, derpibooru, realbooru } and tags for filtering",
+        out: gethentai
     }
 ];

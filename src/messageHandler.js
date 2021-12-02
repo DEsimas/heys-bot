@@ -6,7 +6,7 @@ export default function messageHandler(message) {
     const command = args[0].toLowerCase();
     commands.forEach(cmd => {
         cmd.name.forEach(name => {
-            if (process.env.PREFIX + name === command) cmd.out(message);
+            if (process.env.PREFIX + name === command) cmd.out(message, args);
         });
     });
 }

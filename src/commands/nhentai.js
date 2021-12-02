@@ -1,3 +1,3 @@
-export default function nhentai(message) {
+export default function nhentai(message, args) {
     
 }

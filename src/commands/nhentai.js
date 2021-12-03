@@ -80,18 +80,18 @@ export default function nhentai(message, args) {
         }
     }
 
-    const ID = args[1];
+    const ID = args[2];
 
     if(!message.channel.nsfw) {
         sendError("Hentai is only availible on nsfw channels");
         return;
     }
 
-    if((isNaN(ID) && ID?.toLowerCase() !== "random") || ID <= 0 || ID > 300000) {
+    if((isNaN(ID) && ID?.toLowerCase() !== "random" && ID !== undefined) || ID <= 0 || ID > 300000)  {
         sendError("You should pass doujin code or \"random\"");
         return;
     }
 
-    if(ID === "random") sendRandom();  
-    else sendDoujin(ID)
+    if(ID === "random" || ID === undefined) sendRandom();  
+    else sendDoujin(ID);
 }

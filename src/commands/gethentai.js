@@ -1,5 +1,6 @@
 import Discord from "discord.js";
 import Booru from "booru";
+import nhentai from "./nhentai.js";
 
 export default function gethentai(message, args) {
     function sendError(content) {
@@ -34,6 +35,12 @@ export default function gethentai(message, args) {
     }
 
     const site = args[1];
+
+    if(site === "nhentai") {
+        nhentai(message, args);
+        return;
+    }
+
     let tags = [];
     let amount = 1;
     args.forEach((arg, index) => {

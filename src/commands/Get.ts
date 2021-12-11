@@ -1,5 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { ICommandHandler, IPayload } from "discordjs-commands-parser";
+import { BooruSender } from "../components/BooruSender";
 import { DoujinSender } from "../components/DoujinSender";
 
 export class Get implements ICommandHandler {
@@ -62,8 +63,8 @@ export class Get implements ICommandHandler {
         return true;
     }
 
-    private isSourceNhentai() {
-        return this.nhentaiAllias.includes(this.source);
+    private isSourceNhentai(): boolean {
+        return this.nhentaiAllias.includes(this.source.toLowerCase());
     }
 
     public execute(): void {
@@ -72,6 +73,9 @@ export class Get implements ICommandHandler {
         if(this.isSourceNhentai()) {
             const sender = new DoujinSender(this.args[2] || "random", this.message, this.message.url);
             sender.sendDoujin();
+        } else {
+            const sender = new BooruSender(this.message, this.source, this.tags, this.amount);
+            sender.send();
         }
     }
 };

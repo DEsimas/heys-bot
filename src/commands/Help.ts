@@ -1,7 +1,7 @@
 import { ICommandHandler, IPayload } from "discordjs-commands-parser";
 
 export class Help implements ICommandHandler {
-    execute(payload: IPayload) {
+    execute(): void {
         console.log("help");
     }
 };

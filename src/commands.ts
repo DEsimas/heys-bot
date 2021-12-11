@@ -5,12 +5,12 @@ import { Help } from "./commands/help";
 export const commands: Array<ICommand> = [
     {
         name: ["help"],
-        out: new Help(),
+        out: Help,
         multicase: true
     },
     {
         name: ["get", ""],
-        out: new Get(),
+        out: Get,
         multicase: true
     }
 ];

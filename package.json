@@ -1,7 +1,8 @@
 {
   "name": "heys-bot",
-  "version": "6.1.1",
+  "version": "6.1.2",
   "scripts": {
+    "postinstall": "tsc",
     "start": "npx tsc && node ./dist/main.js"
   },
   "dependencies": {

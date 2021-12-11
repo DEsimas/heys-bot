@@ -4,7 +4,7 @@ import { Help } from "./commands/help";
 
 export const commands: Array<ICommand> = [
     {
-        name: ["help"],
+        name: ["help", "h", "guide", "?"],
         out: Help,
         multicase: true
     },

@@ -12,7 +12,7 @@ export class Get implements ICommandHandler {
 
     private readonly errorColour = "#ff0000";
     private readonly maxAmount = 200;
-    private readonly nhentaiAllias = ["nhentai", "nh"];
+    private readonly nhentaiAllias = ["nhentai", "nh", "nhentai.net"];
 
     constructor(payload: IPayload) {
         this.args = [...payload.args];

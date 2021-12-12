@@ -25,6 +25,7 @@ class BooruSender {
             return false;
         const t = url.split(".");
         const extension = ("." + t[t.length - 1]).toLowerCase();
+        //console.log(`${url} >>> ${extension}`);
         return this.videoExtensions.includes(extension);
     }
     getImageEmbed(url) {
@@ -37,6 +38,7 @@ class BooruSender {
         posts.forEach((el, index) => {
             if (this.isVideo(el.fileUrl)) {
                 if (embeds.length) {
+                    console.log(embeds.length);
                     this.message.channel.send({ embeds: embeds });
                     embeds = [];
                 }
@@ -44,7 +46,7 @@ class BooruSender {
             }
             else
                 embeds.push(this.getImageEmbed(el.fileUrl));
-            if (embeds.length > 10) {
+            if (embeds.length === 10) {
                 this.message.channel.send({ embeds: embeds });
                 embeds = [];
             }

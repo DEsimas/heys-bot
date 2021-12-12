@@ -8,7 +8,7 @@ class Get {
     constructor(payload) {
         this.amount = 1;
         this.errorColour = "#ff0000";
-        this.maxAmount = 200;
+        this.maxAmount = 100;
         this.nhentaiAllias = ["nhentai", "nh", "nhentai.net"];
         this.args = [...payload.args];
         const args = payload.args;

@@ -31,6 +31,8 @@ export class BooruSender {
 
         const t = url.split(".");
         const extension = ("." + t[t.length - 1]).toLowerCase();
+        
+        //console.log(`${url} >>> ${extension}`);
 
         return this.videoExtensions.includes(extension);
     }
@@ -45,6 +47,7 @@ export class BooruSender {
         let embeds: Array<MessageEmbed> = [];
         posts.forEach((el, index) => {
             if(this.isVideo(el.fileUrl)) {
+
                 if(embeds.length) {
                     this.message.channel.send({ embeds: embeds });
                     embeds = [];
@@ -54,7 +57,7 @@ export class BooruSender {
             }
             else embeds.push(this.getImageEmbed(el.fileUrl));
 
-            if (embeds.length > 10) {
+            if (embeds.length === 10) {
                 this.message.channel.send({ embeds: embeds });
                 embeds = [];
             }

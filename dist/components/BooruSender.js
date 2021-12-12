@@ -38,7 +38,6 @@ class BooruSender {
         posts.forEach((el, index) => {
             if (this.isVideo(el.fileUrl)) {
                 if (embeds.length) {
-                    console.log(embeds.length);
                     this.message.channel.send({ embeds: embeds });
                     embeds = [];
                 }

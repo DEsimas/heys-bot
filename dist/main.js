@@ -11,5 +11,6 @@ const handler = new discordjs_commands_parser_1.CommandsHandler({
 });
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES] });
 client.on("messageCreate", handler.getEventHandler());
+client.on("ready", () => { console.log("Bot Started!"); });
 client.login(process.env.TOKEN);
 //# sourceMappingURL=main.js.map

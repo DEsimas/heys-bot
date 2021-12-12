@@ -11,7 +11,7 @@ export class Get implements ICommandHandler {
     private args: Array<string>;
 
     private readonly errorColour = "#ff0000";
-    private readonly maxAmount = 200;
+    private readonly maxAmount = 100;
     private readonly nhentaiAllias = ["nhentai", "nh", "nhentai.net"];
 
     constructor(payload: IPayload) {

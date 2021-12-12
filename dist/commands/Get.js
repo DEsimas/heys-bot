@@ -18,7 +18,10 @@ class Get {
         args.forEach((arg, index) => {
             const amount = Number(arg);
             if (!isNaN(amount)) {
-                if (amount > this.maxAmount)
+                if (amount < 1) {
+                    this.amount = 1;
+                }
+                else if (amount > this.maxAmount)
                     this.amount = this.maxAmount;
                 else
                     this.amount = amount;

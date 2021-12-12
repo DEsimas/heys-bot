@@ -35,18 +35,23 @@ class BooruSender {
     sendPosts(posts) {
         let embeds = [];
         posts.forEach((el, index) => {
-            if (this.isVideo(el.fileUrl))
+            if (this.isVideo(el.fileUrl)) {
+                if (embeds.length) {
+                    this.message.channel.send({ embeds: embeds });
+                    embeds = [];
+                }
                 this.message.channel.send(el.fileUrl || "https://cdn.discordapp.com/attachments/883231507349663754/919280306039693362/de87d8677c229687.png");
+            }
             else
                 embeds.push(this.getImageEmbed(el.fileUrl));
-            if ((index + 1) % 10 === 0) {
+            if (embeds.length > 10) {
                 this.message.channel.send({ embeds: embeds });
                 embeds = [];
             }
         });
         if (embeds.length)
             this.message.channel.send({ embeds: embeds });
-        if (this.amount >= 5)
+        if (posts.length >= 5)
             this.message.channel.send(this.message.url);
     }
     ;

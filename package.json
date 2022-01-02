@@ -1,8 +1,8 @@
 {
   "name": "heys-bot",
-  "version": "6.1.4",
+  "version": "6.2.0",
   "scripts": {
-    "start:dev": "npm run build && npm run start", 
+    "start:dev": "npm run build && npm run start",
     "start": "node ./dist/main.js",
     "build": "npx tsc"
   },
@@ -11,6 +11,7 @@
     "discord.js": "^13.3.1",
     "discordjs-commands-parser": "^2.1.2",
     "dotenv": "^10.0.0",
+    "mongoose": "^6.1.4",
     "nhentai": "^3.0.0"
   },
   "devDependencies": {

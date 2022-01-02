@@ -39,26 +39,23 @@ export class DoujinSender {
             .setThumbnail(doujin.thumbnail.url)
             .setColor("#202225");
         this.message.channel.send({ embeds: [embed] });
-    };
+    }
 
-    private sendPages(doujin: Doujin) {
-        let embeds: Array<MessageEmbed> = [];
-        doujin.pages.forEach((el, index) => {
-            const embed = new MessageEmbed()
-                .setImage(el.url)
-                .setColor("#202225");
+    private async sendPages(doujin: Doujin): Promise<void> {
+        const embed = new MessageEmbed()
+            .setImage(doujin.pages[0].url)
+            .setColor("#202225");
+        
+        const msg = await this.message.channel.send({embeds: [embed]});
+        msg.react("⬅️");
+        msg.react("🛑");
+        msg.react("➡️");
 
-            embeds.push(embed);
-
-            if ((index + 1) % 10 === 0) {
-                this.message.channel.send({ embeds: embeds });
-                embeds = [];
-            }
+        const pages: Array<string> = [];
+        doujin.pages.forEach(p => {
+            pages.push(p.url);
         });
-
-        if (embeds.length) this.message.channel.send({ embeds: embeds });
-        this.message.channel.send(this.url);
-    };
+    }
 
     private async sendRandom(): Promise<void> {
         const api = new nhentai.API();

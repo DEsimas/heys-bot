@@ -1,6 +1,6 @@
 import { ICommand } from "discordjs-commands-parser";
 import { Get } from "./commands/Get";
-import { Help } from "./commands/help";
+import { Help } from "./commands/Help";
 
 export const commands: Array<ICommand> = [
     {

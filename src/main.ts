@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import { CommandsHandler } from "discordjs-commands-parser";
 import { commands } from "./commands";
 import { DAO } from "./database/DAO";
+import { ReactionHandler } from "./components/ReactionHandler";
 
 async function main() {
     dotenv.config();
@@ -30,6 +31,8 @@ async function main() {
     const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES] });
     client.on("messageCreate", handler.getEventHandler());
     client.on("ready", () => {console.log("Bot Started!")});
+    client.on("messageReactionAdd", () => console.log("add"));
+    client.on("messageReactionDelete", () => console.log("del"));
     client.login(process.env.TOKEN);
 
 }

@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import * as nhentai from "nhentai";
 import { Doujin } from "nhentai";
+import { DAO } from "../database/DAO";
 
 export class DoujinSender {
     private id: string;
@@ -54,6 +55,13 @@ export class DoujinSender {
         const pages: Array<string> = [];
         doujin.pages.forEach(p => {
             pages.push(p.url);
+        });
+
+        DAO.Doujins.addDoujin({
+            messageID: this.message.id,
+            requesterID: this.message.author.id,
+            pages: pages,
+            page: 0
         });
     }
 

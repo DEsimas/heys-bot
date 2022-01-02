@@ -13,7 +13,7 @@ export class SetPrefix implements ICommandHandler {
 
     public async execute() : Promise<void> {
         if(!this.message.guild?.id) return;
-        if(!this.isAdmin()) {
+        if(!(await this.isAdmin())) {
             this.message.channel.send({embeds:[new MessageEmbed().setColor("#FF0000").setTitle("This command is avaliable only for admins")]});
             return;
         }

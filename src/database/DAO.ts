@@ -1,8 +1,10 @@
 import { connect } from "mongoose";
+import { Doujins } from "./Doujins";
 import { Prefixes } from "./Prefixes";
 
 export class DAO {
     public static readonly Prefixes = new Prefixes();
+    public static readonly Doujins = new Doujins();
 
     public static async connect(): Promise<void> {
         if(!process.env.MONGO) throw new Error("Mongo uri not found");

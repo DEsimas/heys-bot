@@ -1,6 +1,7 @@
 import { ICommand } from "discordjs-commands-parser";
 import { Get } from "./commands/Get";
 import { Help } from "./commands/Help";
+import { SetPrefix } from "./commands/SetPrefix";
 
 export const commands: Array<ICommand> = [
     {
@@ -11,6 +12,11 @@ export const commands: Array<ICommand> = [
     {
         name: ["get", ""],
         out: Get,
+        multicase: true
+    },
+    {
+        name: ["setprefix", "changeprefix"],
+        out: SetPrefix,
         multicase: true
     }
 ];

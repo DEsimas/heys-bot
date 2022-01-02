@@ -25,7 +25,7 @@ export class Prefixes {
     }
 
     public async editPrefix(serverID: string, prefix: string): Promise<Prefix> {
-        this.PrefixModel.deleteOne({serverID: serverID});
+        await this.PrefixModel.deleteOne({serverID: serverID});
         return (new this.PrefixModel({serverID: serverID, prefix: prefix})).save();
     }
 };

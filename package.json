@@ -1,6 +1,6 @@
 {
   "name": "heys-bot",
-  "version": "6.2.1",
+  "version": "6.2.2",
   "scripts": {
     "start:dev": "npm run build && npm run start",
     "start": "node ./dist/main.js",

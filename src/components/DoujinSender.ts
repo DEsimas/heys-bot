@@ -60,7 +60,7 @@ export class DoujinSender {
                 .setColor("#202225")
                 .setImage(pages[i]);
 
-            return embed;
+            return {embeds:[embed]};
         });
     }
 

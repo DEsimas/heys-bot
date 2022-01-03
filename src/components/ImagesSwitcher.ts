@@ -1,11 +1,11 @@
-import { Message, MessageEmbed, MessageReaction, ReactionCollector, User } from "discord.js";
+import { Message, MessageOptions, MessageReaction, ReactionCollector, User } from "discord.js";
 
 export class ImagesSwitcher {
     private readonly message: Message;
     private readonly requesterID: string;
     private readonly images: string[];
     private readonly collector: ReactionCollector;
-    private readonly getEmbed: (images: string[], i: number) => MessageEmbed; 
+    private readonly getMsg: (images: string[], i: number) => MessageOptions; 
     
     private readonly switcherLiveTime = 12 * 60 * 60 * 1000; // 12h
     private readonly nextReaction = "➡️";
@@ -14,12 +14,12 @@ export class ImagesSwitcher {
 
     private i = 0;
 
-    constructor(message: Message, reuqesterID: string, images: string[], getEmbed: (images: string[], i: number) => MessageEmbed ) {
+    constructor(message: Message, reuqesterID: string, images: string[], getMsg: (images: string[], i: number) => MessageOptions ) {
         this.message = message;
         this.requesterID = reuqesterID;
         this.images = images;
         this.collector = this.message.createReactionCollector({ dispose: true, filter: (reaciton: MessageReaction, user: User) => (this.filter(reaciton, user)), time: this.switcherLiveTime });
-        this.getEmbed = getEmbed;
+        this.getMsg = getMsg;
         this.setReactions();
         this.updateImage();
 
@@ -62,7 +62,7 @@ export class ImagesSwitcher {
     }
 
     private updateImage(): void {
-        this.message.edit({embeds: [this.getEmbed(this.images, this.i)]});
+        this.message.edit(this.getMsg(this.images, this.i));
     }
 
     private next(): void {

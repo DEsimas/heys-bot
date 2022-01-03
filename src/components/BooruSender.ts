@@ -27,6 +27,8 @@ export class BooruSender {
     }
 
     private async sendPosts(posts: SearchResults): Promise<void> {
+
+
         const embed = new MessageEmbed()
             .setColor("#202225")
             .setTitle("Loading...");
@@ -64,6 +66,7 @@ export class BooruSender {
             Booru.search(this.source, this.tags, { limit: this.amount, random: true }).then(posts => {
                 if (!posts.length) {
                     this.sendError("Nothing was found");
+                    return;
                 }
                 this.sendPosts(posts);
             }).catch(err => {

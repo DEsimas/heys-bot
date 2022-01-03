@@ -27,7 +27,7 @@ async function main() {
         ]
     })
     
-    const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES] });
+    const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
     client.on("messageCreate", handler.getEventHandler());
     client.on("ready", () => {console.log("Bot Started!")});
     client.login(process.env.TOKEN);

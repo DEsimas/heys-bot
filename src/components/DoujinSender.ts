@@ -2,6 +2,7 @@ import { Message, MessageEmbed } from "discord.js";
 import * as nhentai from "nhentai";
 import { Doujin } from "nhentai";
 import { DAO } from "../database/DAO";
+import { ImagesSwitcher } from "./ImagesSwitcher";
 
 export class DoujinSender {
     private id: string;
@@ -44,24 +45,18 @@ export class DoujinSender {
 
     private async sendPages(doujin: Doujin): Promise<void> {
         const embed = new MessageEmbed()
-            .setImage(doujin.pages[0].url)
+            .setTitle("Loading...")
             .setColor("#202225");
         
         const msg = await this.message.channel.send({embeds: [embed]});
-        msg.react("⬅️");
-        msg.react("🛑");
-        msg.react("➡️");
+        
+        new ImagesSwitcher(msg, this.message.author.id, doujin.pages, (pages, i) => {
+            const embed = new MessageEmbed()
+                .setTitle(`${i+1} / ${pages.length}`)
+                .setColor("#202225")
+                .setImage(pages[i].url);
 
-        const pages: Array<string> = [];
-        doujin.pages.forEach(p => {
-            pages.push(p.url);
-        });
-
-        DAO.Doujins.addDoujin({
-            messageID: this.message.id,
-            requesterID: this.message.author.id,
-            pages: pages,
-            page: 0
+            return embed;
         });
     }
 

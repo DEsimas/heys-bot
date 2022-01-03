@@ -58,7 +58,7 @@ export class Get implements ICommandHandler {
         if(!this.validateRequest()) return;
         
         if(this.isSourceNhentai()) {
-            const sender = new DoujinSender(this.args[2] || "random", this.message, this.message.url);
+            const sender = new DoujinSender(this.args[2] || "random", this.message);
             sender.sendDoujin();
         } else {
             const sender = new BooruSender(this.message, this.source, this.tags, this.booruLimit);

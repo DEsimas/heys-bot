@@ -1,20 +1,17 @@
 import { Message, MessageEmbed } from "discord.js";
 import * as nhentai from "nhentai";
 import { Doujin } from "nhentai";
-import { DAO } from "../database/DAO";
 import { ImagesSwitcher } from "./ImagesSwitcher";
 
 export class DoujinSender {
     private id: string;
     private message: Message;
-    private url: string;
     
     private readonly errorColour = "#ff0000";
 
-    constructor(id: string, message: Message, url: string) {
+    constructor(id: string, message: Message) {
         this.id = id;
         this.message = message;
-        this.url = url;
     }
 
     private sendError(message: string): void {

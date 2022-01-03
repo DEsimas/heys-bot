@@ -27,8 +27,6 @@ export class BooruSender {
     }
 
     private async sendPosts(posts: SearchResults): Promise<void> {
-
-
         const embed = new MessageEmbed()
             .setColor("#202225")
             .setTitle("Loading...");
@@ -48,12 +46,14 @@ export class BooruSender {
 
             }
 
-            if(isVideo()) {
-                return { content: `Enjoy :)\n**${i+1} / ${images.length}**\n${images[i]}`, embeds: [] };
+            if (isVideo()) {
+                return { content: `Enjoy :)\n**${i + 1} / ${images.length}**\n${images[i]}`, embeds: [] };
             }
 
-            const embed =  new MessageEmbed()
-                .setTitle(`${i+1} / ${images.length}`)
+            console.log(images[i]);
+
+            const embed = new MessageEmbed()
+                .setTitle(`${i + 1} / ${images.length}`)
                 .setColor("#202225")
                 .setImage(images[i]);
 
@@ -62,6 +62,19 @@ export class BooruSender {
     };
 
     public send(): void {
+        if (this.source === "gelbooru.com" ||
+            this.source === "gb" ||
+            this.source === "gel" ||
+            this.source === "gelbooru" ||
+            this.source === "yande.re" ||
+            this.source === "yd" ||
+            this.source === "yand" ||
+            this.source === "yandere") {
+
+            this.sendError("Service temporary unavalible");
+            return;
+        }
+
         try {
             Booru.search(this.source, this.tags, { limit: this.amount, random: true }).then(posts => {
                 if (!posts.length) {

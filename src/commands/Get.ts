@@ -7,11 +7,10 @@ export class Get implements ICommandHandler {
     private message: Message;
     private source: string;
     private tags: Array<string>;
-    private amount: number = 1;
     private args: Array<string>;
 
     private readonly errorColour = "#ff0000";
-    private readonly maxAmount = 100;
+    private readonly booruLimit = 100;
     private readonly nhentaiAllias = ["nhentai", "nh", "nhentai.net"];
 
     constructor(payload: IPayload) {
@@ -19,21 +18,7 @@ export class Get implements ICommandHandler {
         const args = payload.args;
         this.message = payload.message;
         this.source = this.args[1];
-        
         args.splice(0, 2);
-        args.forEach((arg, index) => {
-            const amount = Number(arg)
-            if (!isNaN(amount)) {
-                if(amount < 1) {
-                    this.amount = 1;
-                } else if(amount > this.maxAmount)
-                    this.amount = this.maxAmount;
-                else this.amount = amount;
-    
-                args.splice(index, 1);
-            }
-        });
-    
         this.tags = args;
     }
 
@@ -47,7 +32,7 @@ export class Get implements ICommandHandler {
 
     private validateRequest(): boolean {
         
-        if(!this.message || !this.source || !this.amount) {
+        if(!this.message || !this.source) {
             this.sendError(`Wrong input. Type **${process.env.PREFIX || "$"}help**.`);
             return false;
         }
@@ -76,7 +61,7 @@ export class Get implements ICommandHandler {
             const sender = new DoujinSender(this.args[2] || "random", this.message, this.message.url);
             sender.sendDoujin();
         } else {
-            const sender = new BooruSender(this.message, this.source, this.tags, this.amount);
+            const sender = new BooruSender(this.message, this.source, this.tags, this.booruLimit);
             sender.send();
         }
     }

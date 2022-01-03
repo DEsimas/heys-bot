@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import * as Booru from "booru";
 import SearchResults from "booru/dist/structures/SearchResults";
+import { ImagesSwitcher } from "./ImagesSwitcher";
 
 export class BooruSender {
     private message: Message;
@@ -9,7 +10,6 @@ export class BooruSender {
     private amount: number;
 
     private readonly errorColour = "#ff0000";
-    private readonly videoExtensions = [".mp4", ".mov", ".avi", ".webm", ".flv", ".mkv", ".wmv"];
 
     constructor(message: Message, source: string, tags: Array<string>, amount: number) {
         this.message = message;
@@ -26,45 +26,37 @@ export class BooruSender {
         this.message.channel.send({ embeds: [embed] });
     }
 
-    private isVideo(url: string | null): boolean {
-        if(url === null) return false;
+    private async sendPosts(posts: SearchResults): Promise<void> {
+        const embed = new MessageEmbed()
+            .setColor("#202225")
+            .setTitle("Loading...");
 
-        const t = url.split(".");
-        const extension = ("." + t[t.length - 1]).toLowerCase();
-        
-        //console.log(`${url} >>> ${extension}`);
+        const msg = await this.message.channel.send({ embeds: [embed] });
+        const images: string[] = [];
+        posts.forEach(el => el.fileUrl ? images.push(el.fileUrl) : null);
 
-        return this.videoExtensions.includes(extension);
-    }
+        new ImagesSwitcher(msg, this.message.author.id, images, (images, i) => {
+            const videoExtensions = [".mp4", ".mov", ".avi", ".webm", ".flv", ".mkv", ".wmv"];
 
-    private getImageEmbed(url: string | null): MessageEmbed {
-        return new MessageEmbed()
-                .setImage(url || "https://cdn.discordapp.com/attachments/883231507349663754/919280306039693362/de87d8677c229687.png")
-                .setColor("#202225");
-    }
+            function isVideo(): boolean {
+                const t = images[i].split(".");
+                const extension = ("." + t[t.length - 1]).toLowerCase();
 
-    private sendPosts(posts: SearchResults): void {
-        let embeds: Array<MessageEmbed> = [];
-        posts.forEach((el, index) => {
-            if(this.isVideo(el.fileUrl)) {
+                return videoExtensions.includes(extension);
 
-                if(embeds.length) {
-                    this.message.channel.send({ embeds: embeds });
-                    embeds = [];
-                }
-
-                this.message.channel.send(el.fileUrl || "https://cdn.discordapp.com/attachments/883231507349663754/919280306039693362/de87d8677c229687.png");
             }
-            else embeds.push(this.getImageEmbed(el.fileUrl));
 
-            if (embeds.length === 10) {
-                this.message.channel.send({ embeds: embeds });
-                embeds = [];
+            if(isVideo()) {
+                return { content: `Enjoy :)\n**${i+1} / ${images.length}**\n${images[i]}`, embeds: [] };
             }
-        });
 
-        if (embeds.length) this.message.channel.send({ embeds: embeds });
-        if(posts.length >= 5) this.message.channel.send(this.message.url);
+            const embed =  new MessageEmbed()
+                .setTitle(`${i+1} / ${images.length}`)
+                .setColor("#202225")
+                .setImage(images[i]);
+
+            return { content: "Enjoy :)", embeds: [embed] };
+        })
     };
 
     public send(): void {

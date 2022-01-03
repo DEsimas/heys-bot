@@ -1,12 +1,11 @@
 import { Message, MessageEmbed, MessageReaction, ReactionCollector, User } from "discord.js";
-import { Image } from "nhentai";
 
 export class ImagesSwitcher {
     private readonly message: Message;
     private readonly requesterID: string;
-    private readonly images: Image[];
+    private readonly images: string[];
     private readonly collector: ReactionCollector;
-    private readonly getEmbed: (images: Image[], i: number) => MessageEmbed; 
+    private readonly getEmbed: (images: string[], i: number) => MessageEmbed; 
     
     private readonly switcherLiveTime = 12 * 60 * 60 * 1000; // 12h
     private readonly nextReaction = "➡️";
@@ -15,7 +14,7 @@ export class ImagesSwitcher {
 
     private i = 0;
 
-    constructor(message: Message, reuqesterID: string, images: Image[], getEmbed: (images: Image[], i: number) => MessageEmbed ) {
+    constructor(message: Message, reuqesterID: string, images: string[], getEmbed: (images: string[], i: number) => MessageEmbed ) {
         this.message = message;
         this.requesterID = reuqesterID;
         this.images = images;

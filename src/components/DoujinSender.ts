@@ -49,12 +49,16 @@ export class DoujinSender {
             .setColor("#202225");
         
         const msg = await this.message.channel.send({embeds: [embed]});
+
+        const images: string[] = [];
+
+        doujin.pages.forEach(el => images.push(el.url));
         
-        new ImagesSwitcher(msg, this.message.author.id, doujin.pages, (pages, i) => {
+        new ImagesSwitcher(msg, this.message.author.id, images, (pages, i) => {
             const embed = new MessageEmbed()
                 .setTitle(`${i+1} / ${pages.length}`)
                 .setColor("#202225")
-                .setImage(pages[i].url);
+                .setImage(pages[i]);
 
             return embed;
         });

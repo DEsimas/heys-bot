@@ -75,6 +75,18 @@ export class BooruSender {
             return;
         }
 
+        if(process.env.PROHIBITED) {
+            const prohibited = JSON.parse(process.env.PROHIBITED)
+            console.log(prohibited);
+            if(Array.isArray(prohibited)) {
+                let doExit = false;
+                this.tags.forEach(tag => {
+                    if(prohibited.includes(tag)) doExit = true;
+                })
+                if(doExit) return this.sendError("Not so fast. Your request contains prohibited tags!");
+            }
+        }
+
         try {
             Booru.search(this.source, this.tags, { limit: this.amount, random: true }).then(posts => {
                 if (!posts.length) {

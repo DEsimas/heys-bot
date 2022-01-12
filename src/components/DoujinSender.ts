@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from "discord.js";
+import { Message, MessageEmbed, TextBasedChannel } from "discord.js";
 import * as nhentai from "nhentai";
 import { Doujin } from "nhentai";
 import { ImagesSwitcher } from "./ImagesSwitcher";
@@ -69,7 +69,7 @@ export class DoujinSender {
             const ID = Math.floor(Math.random() * 300000);
 
             const doujin: Doujin | null = await api.fetchDoujin(ID).catch(err => (null));
-            if(doujin !== null) {
+            if(doujin !== null && !this.isProhibited(doujin)) {
                 if(this.isEnglish(doujin)) {
                     this.sendInfo(doujin);
                     this.sendPages(doujin);
@@ -77,6 +77,21 @@ export class DoujinSender {
                 }
             }
         }
+    }
+
+    private isProhibited(doujin: Doujin): boolean {
+        let flag = false;
+        if(process.env.PROHIBITED) {
+            const prohibited = JSON.parse(process.env.PROHIBITED)
+            console.log(prohibited);
+            if(Array.isArray(prohibited)) {
+                doujin.tags.tags.forEach(tag => {
+                    if(prohibited.includes(tag.name)) flag = true;
+                    console.log(prohibited, tag);
+                });
+            }
+        }
+        return flag;
     }
 
     private sendByID(ID: string): void {
@@ -87,6 +102,8 @@ export class DoujinSender {
                 return;
             };
     
+            if(this.isProhibited(doujin)) return this.sendError("Not so fast. Your request contains prohibited tags!");
+
             this.sendInfo(doujin);
             this.sendPages(doujin);
         }).catch(err => {

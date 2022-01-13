@@ -1,7 +1,7 @@
 import { ICommand } from "discordjs-commands-parser";
 import { Get } from "./commands/Get";
 import { Help } from "./commands/Help/Help";
-import { SetPrefix } from "./commands/SetPrefix";
+import { SetPrefix } from "./commands/SetPrefix/SetPrefix";
 
 export const commands: Array<ICommand> = [
     {

@@ -1,6 +1,6 @@
 import { Message, MessageEmbed } from "discord.js";
 import { ICommandHandler, IPayload } from "discordjs-commands-parser";
-import { DAO } from "../database/DAO";
+import { DAO } from "./../../database/DAO";
 
 export class SetPrefix implements ICommandHandler {
     private readonly message: Message;

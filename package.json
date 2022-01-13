@@ -1,6 +1,6 @@
 {
   "name": "heys-bot",
-  "version": "6.5.3",
+  "version": "6.5.4",
   "description": "Discord bot for getting lewd images from different boorus and nhentai",
   "keywords": [
       "nsfw",
@@ -21,7 +21,7 @@
       "email": "simasuh@gmail.com",
       "url": "https://github.com/DEsimas"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/main.js",
   "repository": {
       "type": "git",
       "url": "https://github.com/DEsimas/heys-bot"

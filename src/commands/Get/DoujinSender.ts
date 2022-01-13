@@ -32,7 +32,7 @@ export class DoujinSender {
     private sendInfo(doujin: Doujin) {
         let tags = doujin.tags.all.map(tag => tag.name).join(', ');
         const embed = new MessageEmbed()
-            .setAuthor("NHENTAI")
+            .setAuthor({ name: "NHENTAI" })
             .addField("Enjoy the masterpiece: ", "**" + doujin.titles.pretty + "**" + " [" + doujin.id + "]")
             .addField("Tags: ", tags)
             .setThumbnail(doujin.thumbnail.url)

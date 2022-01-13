@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import { ICommandHandler, IPayload } from "discordjs-commands-parser";
-import { BooruSender } from "../components/BooruSender";
-import { DoujinSender } from "../components/DoujinSender";
+import { BooruSender } from "./BooruSender";
+import { DoujinSender } from "./DoujinSender";
 
 export class Get implements ICommandHandler {
     private message: Message;

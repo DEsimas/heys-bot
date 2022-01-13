@@ -1,5 +1,5 @@
 import { ICommand } from "discordjs-commands-parser";
-import { Get } from "./commands/Get";
+import { Get } from "./commands/Get/Get";
 import { Help } from "./commands/Help/Help";
 import { SetPrefix } from "./commands/SetPrefix/SetPrefix";
 

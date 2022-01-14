@@ -23,8 +23,8 @@ export class ImagesSwitcher {
         this.setReactions();
         this.updateImage();
 
-        this.collector.on("collect", (reaction, user) => (this.detectReaction(reaction, user)));
-        this.collector.on("remove", (reaction, user) => (this.detectReaction(reaction, user)));
+        this.collector.on("collect", (reaction, user) => (this.addReaction(reaction, user)));
+        this.collector.on("remove", (reaction, user) => (this.removeReaction(reaction, user)));
         this.collector.on("end", () => this.endHandling());
     }
 
@@ -33,8 +33,22 @@ export class ImagesSwitcher {
             this.message.delete();
         }
     }
-    
-    private detectReaction(reaction: MessageReaction, user: User): void {
+
+    private addReaction(reaction: MessageReaction, user: User) {
+        switch (reaction.emoji.name) {
+            case this.nextReaction:
+                this.next();
+            break;
+            case this.prevReaction:
+                this.prev();
+            break;
+            case this.stopReaction:
+                this.endHandling();
+            break;
+        }
+    }
+
+    private removeReaction(reaction: MessageReaction, user: User) {
         switch (reaction.emoji.name) {
             case this.nextReaction:
                 this.next();

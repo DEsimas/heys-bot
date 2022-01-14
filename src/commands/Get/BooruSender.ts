@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import * as Booru from "booru";
 import SearchResults from "booru/dist/structures/SearchResults";
-import { ImagesSwitcher } from "./ImagesSwitcher";
+import { Images, ImagesSwitcher } from "./ImagesSwitcher";
 
 export class BooruSender {
     private message: Message;
@@ -32,32 +32,38 @@ export class BooruSender {
             .setTitle("Loading...");
 
         const msg = await this.message.channel.send({ embeds: [embed] });
-        const images: string[] = [];
-        posts.forEach(el => el.fileUrl ? images.push(el.fileUrl) : null);
+        const images: Images = [];
+        posts.forEach(el => el.fileUrl ? images.push({ url: el.fileUrl, tags: el.tags}) : null);
 
-        new ImagesSwitcher(msg, this.message.author.id, images, (images, i) => {
+        new ImagesSwitcher(msg, this.message.author.id, images, true, (images, i, doTags) => {
+
             const videoExtensions = [".mp4", ".mov", ".avi", ".webm", ".flv", ".mkv", ".wmv"];
 
             function isVideo(): boolean {
-                const t = images[i].split(".");
+                const t = images[i].url.split(".");
                 const extension = ("." + t[t.length - 1]).toLowerCase();
 
                 return videoExtensions.includes(extension);
+            }
 
+            function parseTags(): string | null {
+                const tagsArr = images[i].tags;
+                if(!tagsArr) return null;
+                let tags = "";
+                tagsArr.forEach(tag => tags += `**${tag}**, `);
+                return tags.slice(0, -2);
             }
 
             if (isVideo()) {
-                return { content: `Enjoy :)\n**${i + 1} / ${images.length}**\n${images[i]}`, embeds: [] };
+                return { content: `**${i + 1} / ${images.length}**${parseTags() && doTags ? `\n**Tags:** ${parseTags()}` : ""}\n${images[i].url}`, embeds: [] };
             }
-
-            console.log(images[i]);
 
             const embed = new MessageEmbed()
                 .setTitle(`${i + 1} / ${images.length}`)
                 .setColor("#202225")
-                .setImage(images[i]);
+                .setImage(images[i].url);
 
-            return { content: "Enjoy :)", embeds: [embed] };
+            return { content: `${parseTags() && doTags ? `\n**Tags:** ${parseTags()}` : "Enjoy :)"}`, embeds: [embed] };
         })
     };
 
@@ -77,7 +83,6 @@ export class BooruSender {
 
         if(process.env.PROHIBITED) {
             const prohibited = JSON.parse(process.env.PROHIBITED)
-            console.log(prohibited);
             if(Array.isArray(prohibited)) {
                 let doExit = false;
                 this.tags.forEach(tag => {

@@ -1,7 +1,7 @@
 import { Message, MessageEmbed, TextBasedChannel } from "discord.js";
 import * as nhentai from "nhentai";
 import { Doujin } from "nhentai";
-import { ImagesSwitcher } from "./ImagesSwitcher";
+import { Images, ImagesSwitcher } from "./ImagesSwitcher";
 
 export class DoujinSender {
     private id: string;
@@ -47,15 +47,15 @@ export class DoujinSender {
         
         const msg = await this.message.channel.send({embeds: [embed]});
 
-        const images: string[] = [];
+        const images: Images = [];
 
-        doujin.pages.forEach(el => images.push(el.url));
+        doujin.pages.forEach(el => images.push({url: el.url}));
         
-        new ImagesSwitcher(msg, this.message.author.id, images, (pages, i) => {
+        new ImagesSwitcher(msg, this.message.author.id, images, false, (pages, i, doTags) => {
             const embed = new MessageEmbed()
                 .setTitle(`${i+1} / ${pages.length}`)
                 .setColor("#202225")
-                .setImage(pages[i]);
+                .setImage(pages[i].url);
 
             return {embeds:[embed]};
         });
@@ -83,11 +83,9 @@ export class DoujinSender {
         let flag = false;
         if(process.env.PROHIBITED) {
             const prohibited = JSON.parse(process.env.PROHIBITED)
-            console.log(prohibited);
             if(Array.isArray(prohibited)) {
                 doujin.tags.tags.forEach(tag => {
                     if(prohibited.includes(tag.name)) flag = true;
-                    console.log(prohibited, tag);
                 });
             }
         }

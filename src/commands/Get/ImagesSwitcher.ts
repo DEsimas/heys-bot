@@ -1,25 +1,32 @@
 import { Message, MessageOptions, MessageReaction, ReactionCollector, User } from "discord.js";
 
+export type Images = Array<{ url: string, tags?: string[] }>;
+export type getMessageFunction = (images: Images, i: number, doTags: boolean) => MessageOptions;
+
 export class ImagesSwitcher {
     private readonly message: Message;
     private readonly requesterID: string;
-    private readonly images: string[];
+    private readonly images: Images;
     private readonly collector: ReactionCollector;
-    private readonly getMsg: (images: string[], i: number) => MessageOptions; 
+    private readonly getMsg: getMessageFunction;
     
     private readonly switcherLiveTime = 12 * 60 * 60 * 1000; // 12h
     private readonly nextReaction = "➡️";
     private readonly prevReaction = "⬅️";
+    private readonly showReaction = "📋";
     private readonly stopReaction = "🛑";
-
+    
+    private doTags: boolean;
     private i = 0;
 
-    constructor(message: Message, reuqesterID: string, images: string[], getMsg: (images: string[], i: number) => MessageOptions ) {
+    constructor(message: Message, reuqesterID: string, images: Images, doTags: boolean, getMsg: getMessageFunction ) {
         this.message = message;
         this.requesterID = reuqesterID;
-        this.images = images;
         this.collector = this.message.createReactionCollector({ dispose: true, filter: (reaciton: MessageReaction, user: User) => (this.filter(reaciton, user)), time: this.switcherLiveTime });
+        this.images = images;
+        this.doTags = doTags;
         this.getMsg = getMsg;
+
         this.setReactions();
         this.updateImage();
 
@@ -45,6 +52,10 @@ export class ImagesSwitcher {
             case this.stopReaction:
                 this.endHandling();
             break;
+            case this.showReaction:
+                this.doTags = true;
+                this.updateImage();
+            break;
         }
     }
 
@@ -59,24 +70,31 @@ export class ImagesSwitcher {
             case this.stopReaction:
                 this.endHandling();
             break;
+            case this.showReaction:
+                this.doTags = false;
+                this.updateImage();
+            break;
         }
     }
 
     private filter(reaction: MessageReaction, user: User): boolean {
         return (reaction.emoji.name === this.nextReaction ||
                 reaction.emoji.name === this.prevReaction ||
-                reaction.emoji.name === this.stopReaction) &&
+                reaction.emoji.name === this.stopReaction ||
+                reaction.emoji.name === this.showReaction) &&
                 user.id === this.requesterID;
     };
     
     private setReactions(): void {
         this.message.react(this.prevReaction);
         this.message.react(this.stopReaction);
+        if(this.doTags) this.message.react(this.showReaction);
         this.message.react(this.nextReaction);
+        this.doTags = false;
     }
 
     private updateImage(): void {
-        this.message.edit(this.getMsg(this.images, this.i));
+        this.message.edit(this.getMsg(this.images, this.i, this.doTags));
     }
 
     private next(): void {

@@ -4,7 +4,7 @@ import SearchResults from "booru/dist/structures/SearchResults";
 import { Images, ImagesSwitcher } from "./ImagesSwitcher";
 import { Blacklist } from "../../database/ServersBlacklists";
 import { Sites, sites, sitesArray } from "../../sites";
-import Site from "booru/dist/structures/Site";
+import Post from "booru/dist/structures/Post";
 
 export class BooruSender {
     private readonly message: Message;
@@ -31,7 +31,7 @@ export class BooruSender {
         this.message.channel.send({ embeds: [embed] });
     }
 
-    private async sendPosts(posts: SearchResults): Promise<void> {
+    private async sendPosts(posts: Array<Post>): Promise<void> {
         const embed = new MessageEmbed()
             .setColor("#202225")
             .setTitle("Loading...");
@@ -91,17 +91,31 @@ export class BooruSender {
         return res;
     }
 
+    private filterPosts(posts: SearchResults, filter: string[]): Array<Post> {
+        const res: Array<Post> = [];
+        posts.forEach(post => {
+            let isOk = true;
+            post.tags.forEach(tag => {
+                if(filter.includes(tag)) isOk = false;
+            });
+            if(isOk) res.push(post);
+        });
+        return res;
+    }
+
     public send(): void {
 
         if (!this.isValid()) return this.sendError("Not so fast. Your request contains blacklisted tags!");
 
         try {
             Booru.search(this.source, this.tags, { limit: this.amount, random: true }).then(posts => {
-                if (!posts.length) {
+                const src = this.getSrc(this.source);
+                const filtered = this.filterPosts(posts, this.blacklists.global.concat(src ? this.blacklists.sites[src] : []));
+                if (!filtered.length) {
                     this.sendError("Nothing was found");
                     return;
                 }
-                this.sendPosts(posts);
+                this.sendPosts(filtered);
             }).catch(err => {
                 this.sendError("Resource not responding. Try again");
             });

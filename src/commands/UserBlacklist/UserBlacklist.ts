@@ -1,3 +1,4 @@
+import Site from "booru/dist/structures/Site";
 import { Message, MessageEmbed } from "discord.js";
 import { ICommandHandler, IPayload } from "discordjs-commands-parser";
 import { DAO } from "../../database/DAO";
@@ -7,8 +8,9 @@ import { sites, Sites, sitesArray } from "../../sites";
 export class UserBlacklist implements ICommandHandler {
     private readonly command: string;
     private readonly userID: string;
-    private readonly args: string[];
+    private readonly tags: string[];
     private readonly message: Message;
+    private readonly site: Sites | null;
 
     private readonly errorColour = "#ff0000";
     private readonly commands = {
@@ -18,8 +20,10 @@ export class UserBlacklist implements ICommandHandler {
 
     constructor(payload: IPayload) {
         this.command = payload.args[1];
+        this.site = this.getSrc(payload.args[2]);
         this.userID = payload.message.author.id;
-        this.args = payload.args;
+        this.tags = payload.args;
+        this.tags.splice(0, 3);
         this.message = payload.message;
     }
 
@@ -38,7 +42,8 @@ export class UserBlacklist implements ICommandHandler {
     }
 
     private async add(): Promise<void> {
-
+        if(this.site === null) return this.sendError("This site is not supported");
+        await DAO.UsersBlacklist.addTags(this.userID, this.site, this.tags);
     }
 
     private async remove(): Promise<void> {

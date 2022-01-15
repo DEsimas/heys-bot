@@ -38,6 +38,11 @@ async function main() {
                 next(payload);
             },
             async (payload, next) => {
+                if(payload.args.includes("--force")) {
+                    payload.args.splice(payload.args.indexOf('--force'), 1);
+                    next(payload);
+                    return;
+                }
                 const id = payload.message.author.id;
                 let userBlack = await DAO.UsersBlacklist.getBlacklists(id);
                 if(userBlack === null) userBlack = await DAO.UsersBlacklist.create(id);

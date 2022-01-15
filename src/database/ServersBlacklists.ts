@@ -64,11 +64,11 @@ export class ServersBlacklists {
         }
     }
 
-    private async create(serverID: string): Promise<Blacklist> {
+    public async create(serverID: string): Promise<Blacklist> {
         return (new this.BlacklistModel(this.getDefaultBlacklist(serverID))).save();
     }
 
-    private async addTags(serverID: string, site: Sites | "global", tags: string[]): Promise<Blacklist | null> {
+    public async addTags(serverID: string, site: Sites | "global", tags: string[]): Promise<Blacklist | null> {
         let server = await this.BlacklistModel.findOne({ serverID: serverID });
         if (!server) return null;
         else await this.BlacklistModel.deleteOne({ serverID: serverID });
@@ -85,7 +85,7 @@ export class ServersBlacklists {
         return (new this.BlacklistModel(updated)).save();
     }
 
-    private async removeTags(serverID: string, site: Sites | "global", tags: string[]): Promise<Blacklist | null> {
+    public async removeTags(serverID: string, site: Sites | "global", tags: string[]): Promise<Blacklist | null> {
         let server = await this.BlacklistModel.findOne({ serverID: serverID });
         if (!server) return null;
         else await this.BlacklistModel.deleteOne({ serverID: serverID });
@@ -116,7 +116,7 @@ export class ServersBlacklists {
         return (new this.BlacklistModel(updated)).save();
     }
 
-    private async getBlacklist(serverID: string, site: Sites | "global"): Promise<string[] | null> {
+    public async getBlacklist(serverID: string, site: Sites | "global"): Promise<string[] | null> {
         const server = await this.BlacklistModel.findOne({ serverID: serverID });
         if(!server) return null;
         return site === "global" ? server.global : server.sites[site];

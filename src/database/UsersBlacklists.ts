@@ -73,62 +73,62 @@ export class UsersBlacklists {
         return black;
     }
 
-    public async create(serverID: string): Promise<Blacklist> {
-        return (new this.BlacklistModel(this.getDefaultBlacklist(serverID))).save();
+    public async create(userID: string): Promise<Blacklist> {
+        return (new this.BlacklistModel(this.getDefaultBlacklist(userID))).save();
     }
 
     public async addTags(userID: string, site: Sites | "global", tags: string[]): Promise<Blacklist | null> {
-        let server = await this.BlacklistModel.findOne({ userID: userID });
-        if (!server) return null;
+        let user = await this.BlacklistModel.findOne({ userID: userID });
+        if (!user) return null;
         else await this.BlacklistModel.deleteOne({ userID: userID });
 
-        if (site === "global") server.global = server.global.concat(tags);
-        else server.sites[site] = server.sites[site].concat(tags);
+        if (site === "global") user.global = user.global.concat(tags);
+        else user.sites[site] = user.sites[site].concat(tags);
 
         const updated: Blacklist = {
-            userID: server.userID,
-            global: server.global,
-            sites: server.sites
+            userID: user.userID,
+            global: user.global,
+            sites: user.sites
         }
 
         return (new this.BlacklistModel(updated)).save();
     }
 
     public async removeTags(userID: string, site: Sites | "global", tags: string[]): Promise<Blacklist | null> {
-        let server = await this.BlacklistModel.findOne({ userID: userID });
-        if (!server) return null;
+        let user = await this.BlacklistModel.findOne({ userID: userID });
+        if (!user) return null;
         else await this.BlacklistModel.deleteOne({ userID: userID });
 
         if (site === "global") {
             tags.forEach((tag) => {
-                const index = server?.global.indexOf(tag);
+                const index = user?.global.indexOf(tag);
                 if (index !== undefined && index > -1) {
-                    server?.global.splice(index, 1);
+                    user?.global.splice(index, 1);
                 }
             });
         }
         else {
             tags.forEach((tag) => {
-                const index = server?.sites[site].indexOf(tag, 0);
-                if (index && index > -1) {
-                    server?.sites[site].splice(index, 1);
+                const index = user?.sites[site].indexOf(tag, 0);
+                if (index !== undefined && index > -1) {
+                    user?.sites[site].splice(index, 1);
                 }
             });
         }
 
         const updated: Blacklist = {
-            userID: server.userID,
-            global: server.global,
-            sites: server.sites
+            userID: user.userID,
+            global: user.global,
+            sites: user.sites
         }
 
         return (new this.BlacklistModel(updated)).save();
     }
 
     public async getBlacklist(userID: string, site: Sites | "global"): Promise<string[] | null> {
-        const server = await this.BlacklistModel.findOne({ userID: userID });
-        if(!server) return null;
-        return site === "global" ? server.global : server.sites[site];
+        const user = await this.BlacklistModel.findOne({ userID: userID });
+        if(!user) return null;
+        return site === "global" ? user.global : user.sites[site];
     }
 
     public async getBlacklists(userID: string): Promise<Blacklist | null> {

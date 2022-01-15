@@ -115,4 +115,10 @@ export class ServersBlacklists {
 
         return (new this.BlacklistModel(updated)).save();
     }
+
+    private async getBlacklist(serverID: string, site: Sites | "global"): Promise<string[] | null> {
+        const server = await this.BlacklistModel.findOne({ serverID: serverID });
+        if(!server) return null;
+        return site === "global" ? server.global : server.sites[site];
+    }
 };

@@ -12,7 +12,6 @@ export class ServersBlacklists {
 
     constructor() {
         this.BlacklistModel = model<Blacklist>("ServersBlacklists", this.getBlacklistSchema())
-        // this.create("uwu").then(res => console.log(res)) // test for create method
     }
 
     private getBlacklistSchema(): Schema<Blacklist> {

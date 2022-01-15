@@ -36,6 +36,13 @@ async function main() {
 
                 payload.blacklists = blacklists;
                 next(payload);
+            },
+            async (payload, next) => {
+                const id = payload.message.author.id;
+                let userBlack = await DAO.UsersBlacklist.getBlacklists(id);
+                if(userBlack === null) userBlack = await DAO.UsersBlacklist.create(id);
+                payload.blacklists = DAO.UsersBlacklist.concat(payload.blacklists, userBlack);
+                next(payload);
             }
         ]
     })

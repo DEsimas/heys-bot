@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import { ICommandHandler, IPayload } from "discordjs-commands-parser";
 import { DAO } from "../../database/DAO";
-import { Blacklist } from "../../database/ServersBlacklists";
+import { Blacklist } from "../../database/UsersBlacklists";
 import { BooruSender } from "./BooruSender";
 import { DoujinSender } from "./DoujinSender";
 

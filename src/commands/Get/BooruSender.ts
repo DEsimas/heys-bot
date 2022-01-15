@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from "discord.js";
 import * as Booru from "booru";
 import SearchResults from "booru/dist/structures/SearchResults";
 import { Images, ImagesSwitcher } from "./ImagesSwitcher";
-import { Blacklist } from "../../database/ServersBlacklists";
+import { Blacklist } from "../../database/UsersBlacklists";
 import { Sites, sites, sitesArray } from "../../sites";
 import Post from "booru/dist/structures/Post";
 

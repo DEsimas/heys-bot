@@ -1,7 +1,7 @@
-import { Message, MessageEmbed, TextBasedChannel } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import * as nhentai from "nhentai";
 import { Doujin } from "nhentai";
-import { Blacklist } from "../../database/ServersBlacklists";
+import { Blacklist } from "../../database/UsersBlacklists";
 import { Images, ImagesSwitcher } from "./ImagesSwitcher";
 
 export class DoujinSender {

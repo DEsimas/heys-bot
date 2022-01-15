@@ -1,6 +1,11 @@
 import { model, Model, Schema } from "mongoose";
-import { Sites } from "./../sites";
-import { Blacklist } from "./ServersBlacklists";
+import { Sites, sitesArray } from "./../sites";
+
+export interface Blacklist {
+    userID: string;
+    global: string[];
+    sites: Record<Sites, string[]>;
+}
 
 export class UsersBlacklists {
     private readonly BlacklistModel: Model<Blacklist>
@@ -11,7 +16,7 @@ export class UsersBlacklists {
 
     private getBlacklistSchema(): Schema<Blacklist> {
         return new Schema<Blacklist>({
-            serverID: String,
+            userID: String,
             global: [String],
             sites: {
                 e621: [String],
@@ -34,9 +39,9 @@ export class UsersBlacklists {
         });
     }
 
-    public getDefaultBlacklist(serverID: string): Blacklist {
+    public getDefaultBlacklist(userID: string): Blacklist {
         return {
-            serverID: serverID,
+            userID: userID,
             global: [],
             sites: {
                 e621: [],
@@ -59,20 +64,29 @@ export class UsersBlacklists {
         }
     }
 
+    public concat(black1: Blacklist, black2: Blacklist): Blacklist {
+        const black = this.getDefaultBlacklist("");
+        black.global = black1.global.concat(black2.global);
+        sitesArray.forEach(site => {
+            black.sites[site] = black1.sites[site].concat(black2.sites[site]);
+        });
+        return black;
+    }
+
     public async create(serverID: string): Promise<Blacklist> {
         return (new this.BlacklistModel(this.getDefaultBlacklist(serverID))).save();
     }
 
-    public async addTags(serverID: string, site: Sites | "global", tags: string[]): Promise<Blacklist | null> {
-        let server = await this.BlacklistModel.findOne({ serverID: serverID });
+    public async addTags(userID: string, site: Sites | "global", tags: string[]): Promise<Blacklist | null> {
+        let server = await this.BlacklistModel.findOne({ userID: userID });
         if (!server) return null;
-        else await this.BlacklistModel.deleteOne({ serverID: serverID });
+        else await this.BlacklistModel.deleteOne({ userID: userID });
 
         if (site === "global") server.global = server.global.concat(tags);
         else server.sites[site] = server.sites[site].concat(tags);
 
         const updated: Blacklist = {
-            serverID: server.serverID,
+            userID: server.userID,
             global: server.global,
             sites: server.sites
         }
@@ -80,10 +94,10 @@ export class UsersBlacklists {
         return (new this.BlacklistModel(updated)).save();
     }
 
-    public async removeTags(serverID: string, site: Sites | "global", tags: string[]): Promise<Blacklist | null> {
-        let server = await this.BlacklistModel.findOne({ serverID: serverID });
+    public async removeTags(userID: string, site: Sites | "global", tags: string[]): Promise<Blacklist | null> {
+        let server = await this.BlacklistModel.findOne({ userID: userID });
         if (!server) return null;
-        else await this.BlacklistModel.deleteOne({ serverID: serverID });
+        else await this.BlacklistModel.deleteOne({ userID: userID });
 
         if (site === "global") {
             tags.forEach((tag) => {
@@ -103,7 +117,7 @@ export class UsersBlacklists {
         }
 
         const updated: Blacklist = {
-            serverID: server.serverID,
+            userID: server.userID,
             global: server.global,
             sites: server.sites
         }
@@ -111,17 +125,17 @@ export class UsersBlacklists {
         return (new this.BlacklistModel(updated)).save();
     }
 
-    public async getBlacklist(serverID: string, site: Sites | "global"): Promise<string[] | null> {
-        const server = await this.BlacklistModel.findOne({ serverID: serverID });
+    public async getBlacklist(userID: string, site: Sites | "global"): Promise<string[] | null> {
+        const server = await this.BlacklistModel.findOne({ userID: userID });
         if(!server) return null;
         return site === "global" ? server.global : server.sites[site];
     }
 
-    public async getBlacklists(serverID: string): Promise<Blacklist | null> {
-        return this.BlacklistModel.findOne({ serverID: serverID });
+    public async getBlacklists(userID: string): Promise<Blacklist | null> {
+        return this.BlacklistModel.findOne({ userID: userID });
     }
 
-    public async doesExist(serverID: string): Promise<boolean> {
-        return (await this.BlacklistModel.findOne({ serverID: serverID })) !== null;
+    public async doesExist(userID: string): Promise<boolean> {
+        return (await this.BlacklistModel.findOne({ userID: userID })) !== null;
     }
 };

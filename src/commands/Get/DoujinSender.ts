@@ -85,14 +85,10 @@ export class DoujinSender {
 
     private isProhibited(doujin: Doujin): boolean {
         let flag = false;
-        if(process.env.PROHIBITED) {
-            const prohibited = JSON.parse(process.env.PROHIBITED)
-            if(Array.isArray(prohibited)) {
-                doujin.tags.tags.forEach(tag => {
-                    if(prohibited.includes(tag.name)) flag = true;
-                });
-            }
-        }
+        doujin.tags.all.forEach(tag => {
+            if(this.blacklists.global.includes(tag.name)) flag = true;
+            if(this.blacklists.sites.nhentai.includes(tag.name)) return flag = true;
+        });
         return flag;
     }
 
@@ -104,7 +100,7 @@ export class DoujinSender {
                 return;
             };
     
-            if(this.isProhibited(doujin)) return this.sendError("Not so fast. Your request contains prohibited tags!");
+            if(this.isProhibited(doujin)) return this.sendError("Not so fast. Your request contains blacklisted tags!");
 
             this.sendInfo(doujin);
             this.sendPages(doujin);

@@ -16,7 +16,6 @@ export class DoujinSender {
         this.id = id;
         this.message = message;
         this.blacklists = blacklists;
-        console.log(this.blacklists);
     }
 
     private sendError(message: string): void {

@@ -3,6 +3,8 @@ import * as Booru from "booru";
 import SearchResults from "booru/dist/structures/SearchResults";
 import { Images, ImagesSwitcher } from "./ImagesSwitcher";
 import { Blacklist } from "../../database/ServersBlacklists";
+import { Sites, sites, sitesArray } from "../../sites";
+import Site from "booru/dist/structures/Site";
 
 export class BooruSender {
     private readonly message: Message;
@@ -19,7 +21,6 @@ export class BooruSender {
         this.tags = tags;
         this.amount = amount;
         this.blacklists = blaclists;
-        console.log(this.blacklists);
     }
 
     private sendError(message: string): void {
@@ -37,7 +38,7 @@ export class BooruSender {
 
         const msg = await this.message.channel.send({ embeds: [embed] });
         const images: Images = [];
-        posts.forEach(el => el.fileUrl ? images.push({ url: el.fileUrl, tags: el.tags}) : null);
+        posts.forEach(el => el.fileUrl ? images.push({ url: el.fileUrl, tags: el.tags }) : null);
 
         new ImagesSwitcher(msg, this.message.author.id, images, true, (images, i, doTags) => {
 
@@ -52,7 +53,7 @@ export class BooruSender {
 
             function parseTags(): string | null {
                 const tagsArr = images[i].tags;
-                if(!tagsArr) return null;
+                if (!tagsArr) return null;
                 let tags = "";
                 tagsArr.forEach(tag => tags += `**${tag}**, `);
                 return tags.slice(0, -2);
@@ -69,32 +70,30 @@ export class BooruSender {
 
             return { content: `${parseTags() && doTags ? `\n**Tags:** ${parseTags()}` : "Enjoy :)"}`, embeds: [embed] };
         })
-    };
+    }
+
+    private getSrc(alias: string): Sites | null {
+        let res: Sites | null = null;
+        sitesArray.forEach(key => {
+            if(sites[key].includes(alias)) res = key;
+        });
+        return res;
+    }
+
+    private isValid(): boolean {
+        let res = true;
+        const src = this.getSrc(this.source);
+        this.tags.forEach(tag => {
+            if (this.blacklists.global.includes(tag)) res = false;
+            if ( src && this.blacklists.sites[src].includes(tag)) res = false;
+        });
+
+        return res;
+    }
 
     public send(): void {
-        if (this.source === "gelbooru.com" ||
-            this.source === "gb" ||
-            this.source === "gel" ||
-            this.source === "gelbooru" ||
-            this.source === "yande.re" ||
-            this.source === "yd" ||
-            this.source === "yand" ||
-            this.source === "yandere") {
 
-            this.sendError("Service temporary unavalible");
-            return;
-        }
-
-        if(process.env.PROHIBITED) {
-            const prohibited = JSON.parse(process.env.PROHIBITED)
-            if(Array.isArray(prohibited)) {
-                let doExit = false;
-                this.tags.forEach(tag => {
-                    if(prohibited.includes(tag)) doExit = true;
-                })
-                if(doExit) return this.sendError("Not so fast. Your request contains prohibited tags!");
-            }
-        }
+        if (!this.isValid()) return this.sendError("Not so fast. Your request contains blacklisted tags!");
 
         try {
             Booru.search(this.source, this.tags, { limit: this.amount, random: true }).then(posts => {

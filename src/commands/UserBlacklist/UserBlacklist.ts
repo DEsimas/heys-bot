@@ -66,7 +66,8 @@ export class UserBlacklist implements ICommandHandler {
         sitesArray.forEach(site => {
             if(black.sites[site].length !== 0) embed.addField(`${site} blacklist:`, this.prettify(black.sites[site]));
         });
-        this.message.channel.send({ embeds: [embed] });
+        if(embed.fields.length) this.message.channel.send({ embeds: [embed] });
+        else this.sendError("You don't have any blacklists");
     }
 
     private showGlobal(blackList: Blacklist): void {

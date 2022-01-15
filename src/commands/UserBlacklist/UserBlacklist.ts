@@ -10,7 +10,7 @@ export class UserBlacklist implements ICommandHandler {
     private readonly userID: string;
     private readonly tags: string[];
     private readonly message: Message;
-    private readonly site: Sites | null;
+    private readonly site: Sites | "global" | null;
 
     private readonly errorColour = "#ff0000";
     private readonly commands = {
@@ -19,8 +19,9 @@ export class UserBlacklist implements ICommandHandler {
     }
 
     constructor(payload: IPayload) {
-        this.command = payload.args[1];
-        this.site = this.getSrc(payload.args[2]);
+        this.command = payload.args[1]?.toLowerCase();
+        this.site = this.getSrc(payload.args[2]?.toLowerCase());
+        if(this.site === null && payload.args[2]?.toLowerCase() === "global") this.site = "global";
         this.userID = payload.message.author.id;
         this.tags = payload.args;
         this.tags.splice(0, 3);
@@ -44,10 +45,13 @@ export class UserBlacklist implements ICommandHandler {
     private async add(): Promise<void> {
         if(this.site === null) return this.sendError("This site is not supported");
         await DAO.UsersBlacklist.addTags(this.userID, this.site, this.tags);
+        this.message.channel.send({ embeds: [new MessageEmbed().setTitle("Ok")] });
     }
 
     private async remove(): Promise<void> {
-
+        if(this.site === null) return this.sendError("This site is not supported");
+        await DAO.UsersBlacklist.removeTags(this.userID, this.site, this.tags);
+        this.message.channel.send({ embeds: [new MessageEmbed().setTitle("Ok")] });
     }
 
     private async show(): Promise<void> {

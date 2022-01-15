@@ -2,20 +2,24 @@ import { Message, MessageEmbed } from "discord.js";
 import * as Booru from "booru";
 import SearchResults from "booru/dist/structures/SearchResults";
 import { Images, ImagesSwitcher } from "./ImagesSwitcher";
+import { Blacklist } from "../../database/ServersBlacklists";
 
 export class BooruSender {
-    private message: Message;
-    private source: string;
-    private tags: Array<string>;
-    private amount: number;
+    private readonly message: Message;
+    private readonly source: string;
+    private readonly tags: Array<string>;
+    private readonly amount: number;
+    private readonly blacklists: Blacklist;
 
     private readonly errorColour = "#ff0000";
 
-    constructor(message: Message, source: string, tags: Array<string>, amount: number) {
+    constructor(message: Message, source: string, tags: Array<string>, amount: number, blaclists: Blacklist) {
         this.message = message;
         this.source = source;
         this.tags = tags;
         this.amount = amount;
+        this.blacklists = blaclists;
+        console.log(this.blacklists);
     }
 
     private sendError(message: string): void {

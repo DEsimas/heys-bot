@@ -1,13 +1,16 @@
 import { Message, MessageEmbed } from "discord.js";
 import { ICommandHandler, IPayload } from "discordjs-commands-parser";
+import { DAO } from "../../database/DAO";
+import { Blacklist } from "../../database/ServersBlacklists";
 import { BooruSender } from "./BooruSender";
 import { DoujinSender } from "./DoujinSender";
 
 export class Get implements ICommandHandler {
-    private message: Message;
-    private source: string;
-    private tags: Array<string>;
-    private args: Array<string>;
+    private readonly message: Message;
+    private readonly source: string;
+    private readonly tags: Array<string>;
+    private readonly args: Array<string>;
+    private readonly blacklists: Blacklist;
 
     private readonly errorColour = "#ff0000";
     private readonly booruLimit = 100;
@@ -20,6 +23,7 @@ export class Get implements ICommandHandler {
         this.source = this.args[1];
         args.splice(0, 2);
         this.tags = args;
+        this.blacklists = payload.blacklists || DAO.ServersBlacklists.getDefaultBlacklist("");
     }
 
     private sendError(message: string): void {
@@ -58,10 +62,10 @@ export class Get implements ICommandHandler {
         if(!this.validateRequest()) return;
         
         if(this.isSourceNhentai()) {
-            const sender = new DoujinSender(this.args[2] || "random", this.message);
+            const sender = new DoujinSender(this.args[2] || "random", this.message, this.blacklists);
             sender.sendDoujin();
         } else {
-            const sender = new BooruSender(this.message, this.source, this.tags, this.booruLimit);
+            const sender = new BooruSender(this.message, this.source, this.tags, this.booruLimit, this.blacklists);
             sender.send();
         }
     }

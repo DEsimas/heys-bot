@@ -39,7 +39,7 @@ export class ServersBlacklists {
         });
     }
 
-    private getDefaultBlacklist(serverID: string): Blacklist {
+    public getDefaultBlacklist(serverID: string): Blacklist {
         return {
             serverID: serverID,
             global: ["loli", "lolicon", "shota", "shotacon"],

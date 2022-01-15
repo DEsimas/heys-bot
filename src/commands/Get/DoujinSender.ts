@@ -1,17 +1,22 @@
 import { Message, MessageEmbed, TextBasedChannel } from "discord.js";
 import * as nhentai from "nhentai";
 import { Doujin } from "nhentai";
+import { Blacklist } from "../../database/ServersBlacklists";
 import { Images, ImagesSwitcher } from "./ImagesSwitcher";
 
 export class DoujinSender {
-    private id: string;
-    private message: Message;
+    private readonly id: string;
+    private readonly message: Message;
+    private readonly blacklists: Blacklist;
+
     
     private readonly errorColour = "#ff0000";
 
-    constructor(id: string, message: Message) {
+    constructor(id: string, message: Message, blacklists: Blacklist) {
         this.id = id;
         this.message = message;
+        this.blacklists = blacklists;
+        console.log(this.blacklists);
     }
 
     private sendError(message: string): void {

@@ -23,6 +23,19 @@ async function main() {
 
                 payload.prefix = prefix;
                 next(payload);
+            },
+            async (payload, next) => {
+                const id = payload.message.guild?.id;
+                if(!id) {
+                    next(payload);
+                    return;
+                }
+
+                let blacklists = await DAO.ServersBlacklists.getBlacklists(id);
+                if(!blacklists) blacklists = await DAO.ServersBlacklists.create(id);
+
+                payload.blacklists = blacklists;
+                next(payload);
             }
         ]
     })

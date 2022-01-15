@@ -9,10 +9,6 @@
         <th>mongodb uri</th>
     </tr>
     <tr>
-        <th>PROHIBITED</th>
-        <th>json array of tags that prohibited for requesting</th>
-    </tr>
-    <tr>
         <th>PREFIX</th>
         <th>default bot prefix </th>
     </tr>

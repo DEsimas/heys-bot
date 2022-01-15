@@ -121,4 +121,8 @@ export class ServersBlacklists {
         if(!server) return null;
         return site === "global" ? server.global : server.sites[site];
     }
+
+    public async getBlacklists(serverID: string): Promise<Blacklist | null> {
+        return this.BlacklistModel.findOne({ serverID: serverID });
+    }
 };

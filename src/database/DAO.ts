@@ -1,10 +1,12 @@
 import { connect } from "mongoose";
 import { Prefixes } from "./Prefixes";
 import { ServersBlacklists } from "./ServersBlacklists";
+import { UsersBlacklists } from "./UsersBlacklists";
 
 export class DAO {
     public static readonly Prefixes = new Prefixes();
     public static readonly ServersBlacklists = new ServersBlacklists();
+    public static readonly UsersBlacklist = new UsersBlacklists();
 
     public static async connect(): Promise<void> {
         if(!process.env.MONGO) throw new Error("Mongo uri not found");

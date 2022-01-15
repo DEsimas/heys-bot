@@ -9,7 +9,7 @@ export class DoujinSender {
     private readonly message: Message;
     private readonly blacklists: Blacklist;
 
-    
+    private readonly retries = 20;
     private readonly errorColour = "#ff0000";
 
     constructor(id: string, message: Message, blacklists: Blacklist) {
@@ -68,8 +68,10 @@ export class DoujinSender {
     private async sendRandom(): Promise<void> {
         const api = new nhentai.API();
         let acknowlaged = false;
+        let requests = 0;
 
-        while(!acknowlaged) {
+        while(!acknowlaged && requests < this.retries) {
+            requests++;
             const ID = Math.floor(Math.random() * 300000);
 
             const doujin: Doujin | null = await api.fetchDoujin(ID).catch(err => (null));
@@ -81,6 +83,8 @@ export class DoujinSender {
                 }
             }
         }
+
+        if(requests === this.retries) this.sendError("Nothing was found. You should try removing some tags from blacklist");
     }
 
     private isProhibited(doujin: Doujin): boolean {

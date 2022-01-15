@@ -125,4 +125,8 @@ export class ServersBlacklists {
     public async getBlacklists(serverID: string): Promise<Blacklist | null> {
         return this.BlacklistModel.findOne({ serverID: serverID });
     }
+
+    public async doesExist(serverID: string): Promise<boolean> {
+        return (await this.BlacklistModel.findOne({ serverID: serverID })) !== null;
+    }
 };

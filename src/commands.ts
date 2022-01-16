@@ -3,6 +3,7 @@ import { Get } from "./commands/Get/Get";
 import { UserBlacklist } from "./commands/UserBlacklist/UserBlacklist";
 import { Help } from "./commands/Help/Help";
 import { SetPrefix } from "./commands/SetPrefix/SetPrefix";
+import { ServerBlacklist } from "./commands/ServerBlacklist/ServerBlacklist";
 
 export const commands: Array<ICommand> = [
     {
@@ -23,6 +24,11 @@ export const commands: Array<ICommand> = [
     {
         name: ["userbalcklist", "blacklist", "tags"],
         out: UserBlacklist,
+        multicase: true
+    },
+    {
+        name: ["serverblacklist, servertags"],
+        out: ServerBlacklist,
         multicase: true
     }
 ];

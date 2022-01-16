@@ -42,7 +42,7 @@ export class ServerBlacklist implements ICommandHandler {
     }
 
     private async add(): Promise<void> {
-        if(!this.isAdmin) return this.sendError("This command is noly for admins");
+        if(!this.isAdmin()) return this.sendError("This command is noly for admins");
         if(this.serverID === undefined) return this.sendError("Command can only be used on server");
         if(this.site === null) return this.sendError("This site is not supported");
         await DAO.ServersBlacklists.addTags(this.serverID, this.site, this.tags);
@@ -50,7 +50,7 @@ export class ServerBlacklist implements ICommandHandler {
     }
 
     private async remove(): Promise<void> {
-        if(!this.isAdmin) return this.sendError("This command is noly for admins");
+        if(!this.isAdmin()) return this.sendError("This command is noly for admins");
         if(this.serverID === undefined) return this.sendError("Command can only be used on server");
         if(this.site === null) return this.sendError("This site is not supported");
         await DAO.ServersBlacklists.removeTags(this.serverID, this.site, this.tags);

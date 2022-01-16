@@ -1,6 +1,7 @@
 import { Message, MessageEmbed } from "discord.js";
 import { ICommandHandler, IPayload } from "discordjs-commands-parser";
 import { DAO } from "../../database/DAO";
+import { Blacklist } from "../../database/ServersBlacklists";
 import { sites, Sites, sitesArray } from "./../../sites";
 
 export class ServerBlacklist implements ICommandHandler {
@@ -35,7 +36,7 @@ export class ServerBlacklist implements ICommandHandler {
                 this.remove();
                 break;
             default:
-                // this.show();
+                this.show();
                 break;
         }
     }
@@ -52,6 +53,38 @@ export class ServerBlacklist implements ICommandHandler {
         if(this.site === null) return this.sendError("This site is not supported");
         await DAO.ServersBlacklists.removeTags(this.serverID, this.site, this.tags);
         this.message.channel.send({ embeds: [new MessageEmbed().setTitle("Ok")] });
+    }
+
+    private async show(): Promise<void> {
+        if(this.serverID === undefined) return this.sendError("Command can only be used on server");
+        const black = await DAO.ServersBlacklists.getBlacklists(this.serverID);
+        if (!black) return this.sendError("You don't have any blacklists");
+        if (this.command === "global") return this.showGlobal(black);
+        const site = this.getSrc(this.command);
+        if (site) return this.showSite(black, site);
+
+        const embed = new MessageEmbed();
+        if(black.global.length !== 0) embed.addField("Global blacklist:", this.prettify(black.global));
+        sitesArray.forEach(site => {
+            if(black.sites[site].length !== 0) embed.addField(`${site} blacklist:`, this.prettify(black.sites[site]));
+        });
+        if(embed.fields.length) this.message.channel.send({ embeds: [embed] });
+        else this.sendError("You don't have any blacklists");
+    }
+
+    private showGlobal(blackList: Blacklist): void {
+        if(blackList.global.length === 0) return this.sendError("You don't have this blacklist");
+        const embed = new MessageEmbed()
+            .addField("Global blacklist:", this.prettify(blackList.global));
+        this.message.channel.send({ embeds: [embed] });
+    }
+
+    private showSite(blackList: Blacklist, site: Sites): void {
+        const black = blackList.sites[site];
+        if(black.length === 0) return this.sendError("You don't have this blacklist");
+        const embed = new MessageEmbed()
+            .addField(`${site} blacklist:`, this.prettify(black));
+        this.message.channel.send({ embeds: [embed] });
     }
 
     private prettify(tags: string[]): string {

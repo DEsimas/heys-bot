@@ -8,10 +8,6 @@
         <th>MONGO</th>
         <th>mongodb uri</th>
     </tr>
-    <tr>
-        <th>PREFIX</th>
-        <th>default bot prefix </th>
-    </tr>
 </table>
 
 ## Using

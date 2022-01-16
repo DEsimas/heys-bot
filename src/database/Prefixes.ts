@@ -21,7 +21,7 @@ export class Prefixes {
 
     public async getPrefix(serverID: string): Promise<string> {
         const prefix = (await this.PrefixModel.findOne({serverID: serverID}))?.prefix;
-        return prefix || process.env.PREFIX || "$";
+        return prefix || "$";
     }
 
     public async editPrefix(serverID: string, prefix: string): Promise<Prefix> {

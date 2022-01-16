@@ -11,12 +11,14 @@ export class Get implements ICommandHandler {
     private readonly tags: Array<string>;
     private readonly args: Array<string>;
     private readonly blacklists: Blacklist;
+    private readonly prefix: string;
 
     private readonly errorColour = "#ff0000";
     private readonly booruLimit = 100;
     private readonly nhentaiAllias = ["nhentai", "nh", "nhentai.net"];
 
     constructor(payload: IPayload) {
+        this.prefix = payload.prefix;
         this.args = [...payload.args];
         const args = payload.args;
         this.message = payload.message;
@@ -37,7 +39,7 @@ export class Get implements ICommandHandler {
     private validateRequest(): boolean {
         
         if(!this.message || !this.source) {
-            this.sendError(`Wrong input. Type **${process.env.PREFIX || "$"}help**.`);
+            this.sendError(`Wrong input. Type **${this.prefix}help**.`);
             return false;
         }
     

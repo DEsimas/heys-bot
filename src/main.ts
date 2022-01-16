@@ -9,17 +9,16 @@ async function main() {
 
     if(!process.env.TOKEN) throw new Error("TOKEN is required");
     if(!process.env.MONGO) throw new Error("MONGO is required");
-    if(!process.env.PREFIX) throw new Error("PREFIX is required");
 
     await DAO.connect();
     
     const handler = new CommandsHandler({
         commandsList: commands,
-        prefix: process.env.PREFIX,
+        prefix: "$",
         middlewares: [
             async (payload, next) => {
                 const serverID = payload.message.guild?.id;
-                const prefix: string = serverID ? await DAO.Prefixes.getPrefix(serverID) : process.env.PREFIX  || "$";
+                const prefix: string = serverID ? await DAO.Prefixes.getPrefix(serverID) : "$";
 
                 payload.prefix = prefix;
                 next(payload);

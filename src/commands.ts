@@ -27,7 +27,7 @@ export const commands: Array<ICommand> = [
         multicase: true
     },
     {
-        name: ["serverblacklist, servertags"],
+        name: ["serverblacklist", "servertags"],
         out: ServerBlacklist,
         multicase: true
     }

@@ -101,7 +101,7 @@ export class ServersBlacklists {
         else {
             tags.forEach((tag) => {
                 const index = server?.sites[site].indexOf(tag, 0);
-                if (index && index > -1) {
+                if (index !== undefined && index > -1) {
                     server?.sites[site].splice(index, 1);
                 }
             });

@@ -32,7 +32,7 @@ export class ServerBlacklist implements ICommandHandler {
                 this.add();
                 break;
             case this.commands.remove:
-                // this.remove();
+                this.remove();
                 break;
             default:
                 // this.show();
@@ -44,6 +44,13 @@ export class ServerBlacklist implements ICommandHandler {
         if(this.serverID === undefined) return this.sendError("Command can only be used on server");
         if(this.site === null) return this.sendError("This site is not supported");
         await DAO.ServersBlacklists.addTags(this.serverID, this.site, this.tags);
+        this.message.channel.send({ embeds: [new MessageEmbed().setTitle("Ok")] });
+    }
+
+    private async remove(): Promise<void> {
+        if(this.serverID === undefined) return this.sendError("Command can only be used on server");
+        if(this.site === null) return this.sendError("This site is not supported");
+        await DAO.ServersBlacklists.removeTags(this.serverID, this.site, this.tags);
         this.message.channel.send({ embeds: [new MessageEmbed().setTitle("Ok")] });
     }
 

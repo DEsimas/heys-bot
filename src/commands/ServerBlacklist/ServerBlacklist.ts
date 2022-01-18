@@ -1,10 +1,10 @@
 import { Message, MessageEmbed } from "discord.js";
-import { ICommandHandler, IPayload } from "discordjs-commands-parser";
+import { CommandHandler, Payload } from "discordjs-commands-parser";
 import { DAO } from "../../database/DAO";
 import { Blacklist } from "../../database/ServersBlacklists";
 import { sites, Sites, sitesArray } from "./../../sites";
 
-export class ServerBlacklist implements ICommandHandler {
+export class ServerBlacklist implements CommandHandler {
     private readonly command: string;
     private readonly serverID: string | undefined;
     private readonly tags: string[];
@@ -17,7 +17,7 @@ export class ServerBlacklist implements ICommandHandler {
         remove: "remove"
     }
 
-    constructor(payload: IPayload) {
+    constructor(payload: Payload) {
         this.command = payload.args[1]?.toLowerCase();
         this.site = this.getSrc(payload.args[2]?.toLowerCase());
         if(this.site === null && payload.args[2]?.toLowerCase() === "global") this.site = "global";

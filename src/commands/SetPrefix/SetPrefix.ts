@@ -1,12 +1,12 @@
 import { Message, MessageEmbed } from "discord.js";
-import { ICommandHandler, IPayload } from "discordjs-commands-parser";
+import { CommandHandler, Payload } from "discordjs-commands-parser";
 import { DAO } from "./../../database/DAO";
 
-export class SetPrefix implements ICommandHandler {
+export class SetPrefix implements CommandHandler {
     private readonly message: Message;
     private readonly prefix: string;
 
-    constructor(payload: IPayload) {
+    constructor(payload: Payload) {
         this.message = payload.message;
         this.prefix = payload.args[1] || "$";
     }

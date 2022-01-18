@@ -1,6 +1,6 @@
 import * as Discord from "discord.js";
 import * as dotenv from "dotenv";
-import { CommandsHandler } from "discordjs-commands-parser";
+import { CommandsParser } from "discordjs-commands-parser";
 import { commands } from "./commands";
 import { DAO } from "./database/DAO";
 
@@ -11,8 +11,12 @@ async function main() {
     if(!process.env.MONGO) throw new Error("MONGO is required");
 
     await DAO.connect();
+
+    const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
+
     
-    const handler = new CommandsHandler({
+    const handler = new CommandsParser({
+        client: client,
         commandsList: commands,
         prefix: "$",
         middlewares: [
@@ -51,7 +55,6 @@ async function main() {
         ]
     })
     
-    const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] });
     client.on("messageCreate", handler.getEventHandler());
     client.on("ready", () => {console.log("Bot Started!")});
     client.login(process.env.TOKEN);

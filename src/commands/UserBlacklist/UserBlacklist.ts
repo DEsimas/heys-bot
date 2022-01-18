@@ -1,11 +1,11 @@
 import Site from "booru/dist/structures/Site";
 import { Message, MessageEmbed } from "discord.js";
-import { ICommandHandler, IPayload } from "discordjs-commands-parser";
+import { CommandHandler, Payload } from "discordjs-commands-parser";
 import { DAO } from "../../database/DAO";
 import { Blacklist } from "../../database/UsersBlacklists";
 import { sites, Sites, sitesArray } from "../../sites";
 
-export class UserBlacklist implements ICommandHandler {
+export class UserBlacklist implements CommandHandler {
     private readonly command: string;
     private readonly userID: string;
     private readonly tags: string[];
@@ -18,7 +18,7 @@ export class UserBlacklist implements ICommandHandler {
         remove: "remove"
     }
 
-    constructor(payload: IPayload) {
+    constructor(payload: Payload) {
         this.command = payload.args[1]?.toLowerCase();
         this.site = this.getSrc(payload.args[2]?.toLowerCase());
         if(this.site === null && payload.args[2]?.toLowerCase() === "global") this.site = "global";

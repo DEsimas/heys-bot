@@ -1,11 +1,11 @@
 import { Message, MessageEmbed } from "discord.js";
-import { ICommandHandler, IPayload } from "discordjs-commands-parser";
+import { CommandHandler, Payload } from "discordjs-commands-parser";
 import { DAO } from "../../database/DAO";
 import { Blacklist } from "../../database/UsersBlacklists";
 import { BooruSender } from "./BooruSender";
 import { DoujinSender } from "./DoujinSender";
 
-export class Get implements ICommandHandler {
+export class Get implements CommandHandler {
     private readonly message: Message;
     private readonly source: string;
     private readonly tags: Array<string>;
@@ -17,7 +17,7 @@ export class Get implements ICommandHandler {
     private readonly booruLimit = 100;
     private readonly nhentaiAllias = ["nhentai", "nh", "nhentai.net"];
 
-    constructor(payload: IPayload) {
+    constructor(payload: Payload) {
         this.prefix = payload.prefix;
         this.args = [...payload.args];
         const args = payload.args;

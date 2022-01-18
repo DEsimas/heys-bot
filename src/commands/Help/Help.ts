@@ -1,13 +1,13 @@
 import { Message, MessageEmbed } from "discord.js";
-import { ICommandHandler, IPayload } from "discordjs-commands-parser";
+import { CommandHandler, Payload } from "discordjs-commands-parser";
 import { sites, sitesArray } from "./../../sites";
 
-export class Help implements ICommandHandler {
+export class Help implements CommandHandler {
     private readonly message: Message;
     private readonly prefix: string;
     private readonly args: string[];
 
-    constructor(payload: IPayload) {
+    constructor(payload: Payload) {
         this.message = payload.message;
         this.prefix = payload.prefix;
         this.args = payload.args;

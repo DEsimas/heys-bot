@@ -1,6 +1,6 @@
 {
   "name": "heys-bot",
-  "version": "6.6.2",
+  "version": "6.7.0",
   "description": "Discord bot for getting lewd images from different boorus and nhentai",
   "keywords": [
       "nsfw",
@@ -34,7 +34,7 @@
   "dependencies": {
     "booru": "^2.5.3",
     "discord.js": "^13.5.1",
-    "discordjs-commands-parser": "^2.1.2",
+    "discordjs-commands-parser": "^3.0.1",
     "dotenv": "^11.0.0",
     "mongoose": "^6.1.6",
     "nhentai": "^3.0.0"

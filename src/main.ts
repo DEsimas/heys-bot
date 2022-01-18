@@ -1,5 +1,7 @@
 import { Client, Intents } from "discord.js";
+import { CommandsParser } from "discordjs-commands-parser";
 import { config } from "dotenv";
+import { commands, middlewares } from "./parserOptions";
 
 config(); // import environmental variables
 
@@ -13,7 +15,14 @@ const client = new Client({
     ]
 });
 
+const handler = new CommandsParser({
+    client: client,
+    commandsList: commands,
+    prefix: "", // will be filled from middleware
+    middlewares: middlewares
+});
+
 client.on("ready", () => console.log("Bot started!"));
-client.on("messageCreate", () => { /*TODO: add commands handler*/ });
+client.on("messageCreate", handler.getEventHandler());
 
 client.login(process.env.TOKEN);

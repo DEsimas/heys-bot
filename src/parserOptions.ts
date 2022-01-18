@@ -1,4 +1,5 @@
 import { Command, Middleware, Next, Payload } from "discordjs-commands-parser";
+import { DAO } from "./database/DAO";
 
 export const commands: Array<Command> = [];
 
@@ -26,7 +27,7 @@ async function setPrefix(payload: Payload, next: Next): Promise<void> {
     const serverID = payload.message.guild?.id;
     if(serverID === undefined) return; // exit if message not from a server
 
-    payload.prefix = /*serverID ? await DAO.Prefixes.getPrefix(serverID) :*/ "$"; // TODO: get prefix from database
+    payload.prefix = await DAO.Prefixes.getPrefix(serverID);
 
     next(payload);
 }

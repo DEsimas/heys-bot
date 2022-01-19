@@ -1,6 +1,7 @@
 import { Client } from "discord.js";
 import { Command, Middleware, Next, ParserOptions, Payload } from "discordjs-commands-parser";
 import { Help } from "./commands/Help/Help";
+import { Blacklists } from "./database/Blacklists";
 import { DAO } from "./database/DAO";
 
 export function getParserOptions(client: Client): ParserOptions {
@@ -48,7 +49,11 @@ async function setBlacklist(payload: Payload, next: Next): Promise<void> {
     const serverID = payload.message.guild?.id;
     if(serverID === undefined) return; // exit if message not from a server
 
-    // TODO: get server and user blacklists
-    
+    const serverBL = await DAO.ServersBalacklists.getBlacklists(serverID);
+    if(!payload.flags.includes("--force")) {
+        const userBL = await DAO.UsersBlacklists.getBlacklists(payload.message.author.id);
+        payload.blacklist = Blacklists.concat(serverBL, userBL);
+    } else payload.blacklist = serverBL;
+
     next(payload);
 }

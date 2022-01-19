@@ -20,15 +20,18 @@ export abstract class Blacklists {
         this.BlacklistModel = model<Blacklist>(collectionName, this.getBlacklistSchema());
     }
 
-    public concat(blacklist1: Blacklist, blacklist2: Blacklist): Blacklist {
-        const base = { ...blacklist1 };
+    static concat(list1: Blacklist, list2: Blacklist): Blacklist {
+        const blacklist1 = { userID: list1.userID, serverID: list1.serverID, global: list1.global, sites: list1.sites };
+        const blacklist2 = { userID: list2.userID, serverID: list2.serverID, global: list2.global, sites: list2.sites };
+        const base: Blacklist = { userID: blacklist1.userID, serverID: blacklist1.serverID, global: blacklist1.global, sites: blacklist1.sites };
+
         base.serverID = blacklist1.serverID || blacklist2.serverID;
         base.userID = blacklist1.userID || blacklist2.userID;
         base.global = blacklist1.global.concat(blacklist2.global);
         sitesArray.forEach(site => {
             base.sites[site] = blacklist1.sites[site].concat(blacklist2.sites[site]);
         });
-
+        
         return base;
     }
 
@@ -93,6 +96,6 @@ export abstract class Blacklists {
     }
 
     public async getBlacklists(id: string): Promise<Blacklist> {
-        return (await this.BlacklistModel.findOne({ [this.id]: id })) || (await this.BlacklistModel.create(id));
+        return (await this.BlacklistModel.findOne({ [this.id]: id })) || (await this.BlacklistModel.create(this.getDefaultBlacklist(id)));
     }
 }

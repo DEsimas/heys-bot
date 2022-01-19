@@ -49,7 +49,7 @@ export abstract class Blacklists {
         else blacklist.sites[site] = blacklist.sites[site].concat(tags);
 
         const updated: Blacklist = {
-            [this.id]: blacklist.serverID,
+            [this.id]: blacklist[this.id],
             global: blacklist.global,
             sites: blacklist.sites
         };
@@ -81,7 +81,7 @@ export abstract class Blacklists {
         }
 
         const updated: Blacklist = {
-            [this.id]: blacklist.serverID,
+            [this.id]: blacklist[this.id],
             global: blacklist.global,
             sites: blacklist.sites
         };

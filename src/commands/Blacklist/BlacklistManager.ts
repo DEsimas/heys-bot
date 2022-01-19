@@ -1,5 +1,5 @@
 import { Message, MessageEmbed } from "discord.js";
-import { Sites, sitesArray } from "../../database/sites";
+import { Sites, sitesArray } from "./../../database/sites";
 import { Blacklists } from "./../../database/Blacklists";
 
 export class BlacklistManager {
@@ -8,7 +8,7 @@ export class BlacklistManager {
     private stringify(array: Array<string>): string {
         if(array.length === 0) return " (⁄ ⁄•⁄ω⁄•⁄ ⁄)";
         let res = "";
-        array.forEach(el => res += el);
+        array.forEach(el => res += `${el}, `);
         return res.slice(0, -2);
     }
 

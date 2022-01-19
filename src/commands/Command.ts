@@ -1,6 +1,7 @@
-import { Client, Message } from "discord.js";
+import { Client, Message, MessageEmbed } from "discord.js";
 import { Command, CommandHandler, Middleware, Payload } from "discordjs-commands-parser";
 import { Blacklist } from "../database/Blacklists";
+import { sites, Sites, sitesArray } from "../database/sites";
 
 export abstract class command implements CommandHandler {
     protected readonly client: Client;
@@ -30,5 +31,20 @@ export abstract class command implements CommandHandler {
         if(!guildMember) return false;
         const isAdmin = guildMember.permissions.has("ADMINISTRATOR");
         return isAdmin;
-    };
+    }
+
+    protected getSrc(alias: string): Sites | "global" | null {
+        let res: Sites | null = null;
+        if(alias === "global") return "global";
+        sitesArray.forEach(key => {
+            if(sites[key].includes(alias)) res = key;
+        });
+        return res;
+    }
+
+    protected sendError(msg: string): void {
+        this.message.channel.send({ embeds: [ new MessageEmbed()
+        .setColor("#FF0000")
+        .setTitle(msg) ] });
+    }
 }

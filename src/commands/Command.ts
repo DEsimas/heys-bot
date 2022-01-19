@@ -24,4 +24,11 @@ export abstract class command implements CommandHandler {
     }
 
     abstract execute(): void;
+
+    protected async isAdmin(): Promise<boolean> {
+        const guildMember = await this.message.guild?.members.fetch(this.message.author.id)
+        if(!guildMember) return false;
+        const isAdmin = guildMember.permissions.has("ADMINISTRATOR");
+        return isAdmin;
+    };
 }

@@ -1,5 +1,7 @@
 import { Client } from "discord.js";
 import { Command, Middleware, Next, ParserOptions, Payload } from "discordjs-commands-parser";
+import { ServerBlacklist } from "./commands/Blacklist/ServerBlacklist";
+import { UserBlacklist } from "./commands/Blacklist/UserBlacklist";
 import { Help } from "./commands/Help/Help";
 import { SetPrefix } from "./commands/SetPrefix.ts/SetPrefix";
 import { Blacklists } from "./database/Blacklists";
@@ -25,6 +27,16 @@ const commands: Array<Command> = [
         out: SetPrefix,
         multicase: true
     },
+    {
+        name: ["userbalcklist", "blacklist", "tags"],
+        out: UserBlacklist,
+        multicase: true
+    },
+    {
+        name: ["serverblacklist", "servertags"],
+        out: ServerBlacklist,
+        multicase: true
+    }
 ];
 
 const middlewares: Array<Middleware> = [setFlags, setPrefix, setBlacklist];

@@ -1,5 +1,5 @@
 import { model, Model, Schema } from "mongoose";
-import { Sites, sitesArray } from "../sites";
+import { Sites, sitesArray } from "./sites";
 
 export interface Blacklist {
     serverID?: string;

@@ -1,9 +1,19 @@
-import { Command, Middleware, Next, Payload } from "discordjs-commands-parser";
+import { Client } from "discord.js";
+import { Command, Middleware, Next, ParserOptions, Payload } from "discordjs-commands-parser";
 import { DAO } from "./database/DAO";
 
-export const commands: Array<Command> = [];
+export function getParserOptions(client: Client): ParserOptions {
+    return {
+        client: client,
+        commandsList: commands,
+        prefix: "", // will be filled from middleware
+        middlewares: middlewares
+    }
+}
 
-export const middlewares: Array<Middleware> = [setFlags, setPrefix, setBlacklist];
+const commands: Array<Command> = [];
+
+const middlewares: Array<Middleware> = [setFlags, setPrefix, setBlacklist];
 
 async function setFlags(payload: Payload, next: Next): Promise<void> {
     payload.flags = [];

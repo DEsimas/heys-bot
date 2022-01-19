@@ -2,7 +2,7 @@ import { Client, Intents } from "discord.js";
 import { CommandsParser } from "discordjs-commands-parser";
 import { config } from "dotenv";
 import { DAO } from "./database/DAO";
-import { commands, middlewares } from "./parserOptions";
+import { commands, getParserOptions, middlewares } from "./parserOptions";
 
 config(); // import environmental variables
 
@@ -15,12 +15,7 @@ DAO.connect().then(() => {
         ]
     });
     
-    const handler = new CommandsParser({
-        client: client,
-        commandsList: commands,
-        prefix: "", // will be filled from middleware
-        middlewares: middlewares
-    });
+    const handler = new CommandsParser(getParserOptions(client));
     
     client.on("ready", () => console.log("Bot started!"));
     client.on("messageCreate", handler.getEventHandler());

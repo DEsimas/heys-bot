@@ -1,16 +1,11 @@
-import { Message, MessageEmbed } from "discord.js";
-import { CommandHandler, Payload } from "discordjs-commands-parser";
+import { MessageEmbed } from "discord.js";
+import { Payload } from "discordjs-commands-parser";
+import { command } from "./../Command";
 import { sites, sitesArray } from "./../../database/sites";
 
-export class Help implements CommandHandler {
-    private readonly message: Message;
-    private readonly prefix: string;
-    private readonly args: string[];
-
+export class Help extends command {
     constructor(payload: Payload) {
-        this.message = payload.message;
-        this.prefix = payload.prefix;
-        this.args = payload.args;
+        super(payload);
     }
 
     execute(): void {
@@ -26,7 +21,7 @@ export class Help implements CommandHandler {
             .setDescription("**18+**")
             .addField("Command syntaxis:", `${this.prefix}get <resource name> <tags separated by space>\n Source "nhentai.net" is special, it accepts doujin id or keyword "random"`)
             .addField("Tags can be blacklisted", `type **${this.prefix}help blacklist** to learn more`)
-            .addField("Resources and their aliases:", "<resource name>")
+            .addField("Resources and their aliases:", "<resource name>");
     
         sitesArray.forEach(site => embed.addField(sites[site][0], this.getAliases(sites[site]), true));
     

@@ -2,7 +2,7 @@ import { Client, Intents } from "discord.js";
 import { CommandsParser } from "discordjs-commands-parser";
 import { config } from "dotenv";
 import { DAO } from "./database/DAO";
-import { commands, getParserOptions, middlewares } from "./parserOptions";
+import { getParserOptions } from "./parserOptions";
 
 config(); // import environmental variables
 

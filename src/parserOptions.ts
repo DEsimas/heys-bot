@@ -1,5 +1,6 @@
 import { Client } from "discord.js";
 import { Command, Middleware, Next, ParserOptions, Payload } from "discordjs-commands-parser";
+import { Help } from "./commands/Help/Help";
 import { DAO } from "./database/DAO";
 
 export function getParserOptions(client: Client): ParserOptions {
@@ -11,7 +12,13 @@ export function getParserOptions(client: Client): ParserOptions {
     }
 }
 
-const commands: Array<Command> = [];
+const commands: Array<Command> = [
+    {
+        name: ["help", "h", "guide", "?"],
+        out: Help,
+        multicase: true
+    }
+];
 
 const middlewares: Array<Middleware> = [setFlags, setPrefix, setBlacklist];
 
@@ -42,7 +49,6 @@ async function setBlacklist(payload: Payload, next: Next): Promise<void> {
     if(serverID === undefined) return; // exit if message not from a server
 
     // TODO: get server and user blacklists
-    console.log(payload);
     
     next(payload);
 }

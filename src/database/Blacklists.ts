@@ -1,4 +1,4 @@
-import { Model, Schema } from "mongoose";
+import { model, Model, Schema } from "mongoose";
 import { Sites, sitesArray } from "../sites";
 
 export interface Blacklist {
@@ -8,12 +8,17 @@ export interface Blacklist {
     sites: Record<Sites, string[]>;
 };
 
-abstract class Blacklists {
-    protected abstract readonly BlacklistModel: Model<Blacklist>;
-    protected abstract readonly id: "serverID" | "userID";
+export abstract class Blacklists {
+    private readonly BlacklistModel: Model<Blacklist>;
+    private readonly id: "serverID" | "userID";
 
     protected abstract getBlacklistSchema(): Schema<Blacklist>;
     protected abstract getDefaultBlacklist(id: string): Blacklist;
+
+    constructor(collectionName: string, id: "serverID" | "userID") {
+        this.id = id;
+        this.BlacklistModel = model<Blacklist>(collectionName, this.getBlacklistSchema());
+    }
 
     public concat(blacklist1: Blacklist, blacklist2: Blacklist): Blacklist {
         const base = { ...blacklist1 };

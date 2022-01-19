@@ -1,6 +1,7 @@
 import { Client } from "discord.js";
 import { Command, Middleware, Next, ParserOptions, Payload } from "discordjs-commands-parser";
 import { Help } from "./commands/Help/Help";
+import { SetPrefix } from "./commands/SetPrefix.ts/SetPrefix";
 import { Blacklists } from "./database/Blacklists";
 import { DAO } from "./database/DAO";
 
@@ -18,7 +19,12 @@ const commands: Array<Command> = [
         name: ["help", "h", "guide", "?"],
         out: Help,
         multicase: true
-    }
+    },
+    {
+        name: ["setprefix", "changeprefix"],
+        out: SetPrefix,
+        multicase: true
+    },
 ];
 
 const middlewares: Array<Middleware> = [setFlags, setPrefix, setBlacklist];

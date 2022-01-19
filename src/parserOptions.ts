@@ -6,18 +6,13 @@ export const commands: Array<Command> = [];
 export const middlewares: Array<Middleware> = [setFlags, setPrefix, setBlacklist];
 
 async function setFlags(payload: Payload, next: Next): Promise<void> {
-    const flags = ['--force', '--public'];
     payload.flags = [];
 
-    flags.forEach(flag => {
-        payload.args.every(arg => {
-            if(arg.toLowerCase() === flag) {
-                payload.flags.push(flag);
-                return false;
-            }
-
-            return true;
-        });
+    payload.args.forEach((arg, index) => {
+        if(arg.substring(0,2) === "--") {
+            payload.flags.push(arg.toLowerCase());
+            payload.args.splice(index, 1);
+        } 
     });
 
     next(payload);
@@ -37,6 +32,7 @@ async function setBlacklist(payload: Payload, next: Next): Promise<void> {
     if(serverID === undefined) return; // exit if message not from a server
 
     // TODO: get server and user blacklists
+    console.log(payload);
     
     next(payload);
 }

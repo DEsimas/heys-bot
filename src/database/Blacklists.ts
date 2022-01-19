@@ -1,5 +1,5 @@
 import { Model, Schema } from "mongoose";
-import { Sites } from "../sites";
+import { Sites, sitesArray } from "../sites";
 
 export interface Blacklist {
     serverID?: string;
@@ -15,7 +15,19 @@ abstract class Blacklists {
     protected abstract getBlacklistSchema(): Schema<Blacklist>;
     protected abstract getDefaultBlacklist(id: string): Blacklist;
 
-    protected async create(id: string): Promise<Blacklist> {
+    public concat(blacklist1: Blacklist, blacklist2: Blacklist): Blacklist {
+        const base = { ...blacklist1 };
+        base.serverID = blacklist1.serverID || blacklist2.serverID;
+        base.userID = blacklist1.userID || blacklist2.userID;
+        base.global = blacklist1.global.concat(blacklist2.global);
+        sitesArray.forEach(site => {
+            base.sites[site] = blacklist1.sites[site].concat(blacklist2.sites[site]);
+        });
+
+        return base;
+    }
+
+    public async create(id: string): Promise<Blacklist> {
         return (new this.BlacklistModel(this.getDefaultBlacklist(id))).save();
     }
 

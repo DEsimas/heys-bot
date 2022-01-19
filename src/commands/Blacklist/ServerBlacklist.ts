@@ -21,13 +21,15 @@ export class ServerBlacklist extends command {
             case "add":
                 if(!(await this.isAdmin())) return this.sendError("This command is avalible only for admins");
                 const site = this.getSrc(this.args[2]);
-                if(site === null || this.tags.length === 0) return this.sendError(`Check **${this.prefix}help blacklist** for command syntaxis`);
+                if(site === null) return this.sendError(this.args[2] ? `${this.args[2]} is not supported` : `Check **${this.prefix}help blacklist** for command syntaxis`);
+                if(this.tags.length === 0) return this.sendError(`Check **${this.prefix}help blacklist** for command syntaxis`);
                 this.manager.add(this.message.author.id, site, this.tags);
             break;
             case "remove":
                 if(!(await this.isAdmin())) return this.sendError("This command is avalible only for admins");
                 const origin = this.getSrc(this.args[2]);
-                if(origin === null || this.tags.length === 0) return this.sendError(`Check **${this.prefix}help blacklist** for command syntaxis`);
+                if(origin === null) return this.sendError(this.args[2] ? `${this.args[2]} is not supported` : `Check **${this.prefix}help blacklist** for command syntaxis`);
+                if(this.tags.length === 0) return this.sendError(`Check **${this.prefix}help blacklist** for command syntaxis`);
                 this.manager.remove(this.message.author.id, origin, this.tags);
             break;
             default:

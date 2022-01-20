@@ -39,7 +39,7 @@ const commands: Array<Command> = [
     }
 ];
 
-const middlewares: Array<Middleware> = [setFlags, setPrefix, setBlacklist];
+const middlewares: Array<Middleware> = [setFlags, setPrefix];
 
 async function setFlags(payload: Payload, next: Next): Promise<void> {
     payload.flags = [];
@@ -59,19 +59,6 @@ async function setPrefix(payload: Payload, next: Next): Promise<void> {
     if(serverID === undefined) return; // exit if message not from a server
 
     payload.prefix = await DAO.Prefixes.getPrefix(serverID);
-
-    next(payload);
-}
-
-async function setBlacklist(payload: Payload, next: Next): Promise<void> {
-    const serverID = payload.message.guild?.id;
-    if(serverID === undefined) return; // exit if message not from a server
-
-    const serverBL = await DAO.ServersBalacklists.getBlacklists(serverID);
-    if(!payload.flags.includes("--force")) {
-        const userBL = await DAO.UsersBlacklists.getBlacklists(payload.message.author.id);
-        payload.blacklist = Blacklists.concat(serverBL, userBL);
-    } else payload.blacklist = serverBL;
 
     next(payload);
 }

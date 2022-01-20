@@ -2,9 +2,9 @@ import { Client } from "discord.js";
 import { Command, Middleware, Next, ParserOptions, Payload } from "discordjs-commands-parser";
 import { ServerBlacklist } from "./commands/Blacklist/ServerBlacklist";
 import { UserBlacklist } from "./commands/Blacklist/UserBlacklist";
+import { Get } from "./commands/Get/Get";
 import { Help } from "./commands/Help/Help";
 import { SetPrefix } from "./commands/SetPrefix.ts/SetPrefix";
-import { Blacklists } from "./database/Blacklists";
 import { DAO } from "./database/DAO";
 
 export function getParserOptions(client: Client): ParserOptions {
@@ -35,6 +35,11 @@ const commands: Array<Command> = [
     {
         name: ["serverblacklist", "servertags"],
         out: ServerBlacklist,
+        multicase: true
+    },
+    {
+        name: ["get", ""],
+        out: Get,
         multicase: true
     }
 ];

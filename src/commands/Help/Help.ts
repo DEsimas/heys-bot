@@ -19,7 +19,8 @@ export class Help extends command {
             .setThumbnail("https://cdn.discordapp.com/attachments/883231507349663754/919303367442985001/th.png")
             .setTitle("Usage")
             .setDescription("**18+**")
-            .addField("Command syntaxis:", `${this.prefix}get <resource name> <tags separated by space>\n Source "nhentai.net" is special, it accepts doujin id or keyword "random"`)
+            .addField("Command syntaxis:", `${this.prefix}get <resource name> <tags>\n Source "nhentai.net" is special, it accepts doujin id or keyword "random"`)
+            .addField("<tags>", "Tags must be separated by spaces. You can add '-' to the tag to block it (ex. '-rape').")
             .addField("Tags can be blacklisted", `type **${this.prefix}help blacklist** to learn more`)
             .addField("Resources and their aliases:", "<resource name>");
     

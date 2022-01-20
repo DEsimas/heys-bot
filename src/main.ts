@@ -9,7 +9,7 @@ config(); // import environmental variables
 DAO.connect().then(() => {
     const client = new Client({
         intents: [
-            Intents.FLAGS.GUILDS,                   // TODO: discorver why we need this intent
+            Intents.FLAGS.GUILDS,                   // interaction with servers
             Intents.FLAGS.GUILD_MESSAGES,           // read messages
             Intents.FLAGS.GUILD_MESSAGE_REACTIONS   // read reactions under messages
         ]

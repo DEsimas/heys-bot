@@ -1,5 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { API, Doujin } from "nhentai";
+import { Image } from "./ImagesSwitcher";
+import { ImagesSwitcher, Payload } from "./ImagesSwitcher";
 import { Sender, SenderOptions } from "./Sender";
 
 export class DoujinSender extends Sender {
@@ -74,7 +76,24 @@ export class DoujinSender extends Sender {
 
         const msg = await this.message.channel.send({ embeds: [embed] });
 
-        // TODO: use image switcher
+        const images: Array<Image> = [];
+        doujin.pages.forEach(page => {
+            images.push({ url: page.url});
+        })
+
+        new ImagesSwitcher({
+            message: msg,
+            reuqesterID: this.message.author.id,
+            images: images,
+            doTags: false,
+            isPublic: this.flags.includes("--public"),
+            getMsg: (payload: Payload) => {
+                const embed = new MessageEmbed()
+                    .setTitle(`**${payload.i+1}/${payload.images.length}**`)
+                    .setImage(payload.images[payload.i].url);
+                return { embeds: [embed] };
+            }
+        });
     }
 
     private isEnglish(doujin: Doujin): boolean {

@@ -1,12 +1,13 @@
 import { Message, MessageOptions, MessageReaction, ReactionCollector, User } from "discord.js";
 
 export interface SwitcherOptions {
-    message: Message,
-    reuqesterID: string,
-    images: Array<Image>
-    doTags: boolean,
-    isPublic: boolean,
-    getMsg: getMessageFunction
+    message: Message;
+    reuqesterID: string;
+    botID: string;
+    images: Array<Image>;
+    doTags: boolean;
+    isPublic: boolean;
+    getMsg: getMessageFunction;
 };
 
 export interface Payload {
@@ -21,6 +22,7 @@ export type getMessageFunction = (payload: Payload) => MessageOptions;
 export class ImagesSwitcher {
     private readonly message: Message;
     private readonly requesterID: string;
+    private readonly botID: string;
     private readonly images: Array<Image>;
     private readonly isPublic: boolean;
     private readonly collector: ReactionCollector;
@@ -38,6 +40,7 @@ export class ImagesSwitcher {
     constructor(options: SwitcherOptions) {
         this.message = options.message;
         this.requesterID = options.reuqesterID;
+        this.botID = options.botID;
         this.collector = this.message.createReactionCollector({ dispose: true, filter: (reaciton: MessageReaction, user: User) => (this.filter(reaciton, user)), time: this.switcherLiveTime });
         this.images = options.images;
         this.doTags = options.doTags;
@@ -51,12 +54,13 @@ export class ImagesSwitcher {
             time: this.switcherLiveTime
         });
 
-        this.collector.on("collect", (reaction, user) => (this.addReaction(reaction, user)));
-        this.collector.on("remove", (reaction, user) => (this.removeReaction(reaction, user)));
-        this.collector.on("end", () => (this.endHandling()));
-
-        this.setReactions();
-        this.updateImage();
+        
+        this.setReactions().then(() => {
+            this.collector.on("collect", (reaction, user) => (this.addReaction(reaction, user)));
+            this.collector.on("remove", (reaction, user) => (this.removeReaction(reaction, user)));
+            this.collector.on("end", () => (this.endHandling()));
+            this.updateImage();
+        })
     }
 
     private filter(reaction: MessageReaction, user: User): boolean {
@@ -64,7 +68,7 @@ export class ImagesSwitcher {
                 reaction.emoji.name === this.prevReaction ||
                 reaction.emoji.name === this.stopReaction ||
                 reaction.emoji.name === this.showReaction) &&
-                (user.id === this.requesterID || this.isPublic);
+                ((user.id === this.requesterID || this.isPublic) && user.id != this.botID);
     }
 
     private addReaction(reaction: MessageReaction, user: User): void {
@@ -107,11 +111,11 @@ export class ImagesSwitcher {
         if(this.message.deletable) this.message.delete();
     }
 
-    private setReactions(): void {
-        this.message.react(this.prevReaction);
-        this.message.react(this.stopReaction);
-        if(this.doTags) this.message.react(this.showReaction);
-        this.message.react(this.nextReaction);
+    private async setReactions(): Promise<void> {
+        await this.message.react(this.prevReaction);
+        await this.message.react(this.stopReaction);
+        if(this.doTags) await this.message.react(this.showReaction);
+        await this.message.react(this.nextReaction);
         this.doTags = false;
     }
 

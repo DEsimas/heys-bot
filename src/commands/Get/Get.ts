@@ -2,6 +2,7 @@ import { Payload } from "discordjs-commands-parser";
 import { Blacklist, Blacklists } from "../../database/Blacklists";
 import { DAO } from "../../database/DAO";
 import { command } from "./../Command";
+import { BooruSender } from "./BooruSender";
 import { DoujinSender } from "./DoujinSender";
 import { SenderOptions } from "./Sender";
 
@@ -12,7 +13,7 @@ export class Get extends command {
 
     constructor(payload: Payload) {
         super(payload);
-        this.site = this.args[1];
+        this.site = this.args[1]?.toLowerCase();
         this.doujinID = this.args[2];
         this.tags = [...this.args];
         this.tags.splice(0,2);
@@ -20,18 +21,33 @@ export class Get extends command {
 
     public async execute(): Promise<void> {
         if(this.getSrc(this.site) === "nhentai") {
+            let src = this.getSrc(this.site);
+            if(src === "global") src = null;
             const options: SenderOptions = {
                 message: this.message,
                 blacklist: await this.getBlacklist(),
                 origin: this.site,
-                src: this.getSrc(this.site) || "",
+                botID: this.client.user?.id || "",
+                src: src,
                 flags: this.flags,
-                tags: undefined,
+                tags: [],
                 doujinID: this.doujinID
-            }
+            };
             new DoujinSender(options).send();
         } else {
-            this.message.channel.send("send booru");
+            let src = this.getSrc(this.site);
+            if(src === "global") src = null;
+            const options: SenderOptions = {
+                message: this.message,
+                blacklist: await this.getBlacklist(),
+                origin: this.site,
+                botID: this.client.user?.id || "",
+                src: src,
+                flags: this.flags,
+                tags: this.tags,
+                doujinID: undefined
+            };
+            new BooruSender(options).send();
         }
     }
 

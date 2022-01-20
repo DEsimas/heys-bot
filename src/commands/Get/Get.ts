@@ -62,7 +62,11 @@ export class Get extends command {
             res = Blacklists.concat(serverBL, userBL);
         } else res = serverBL;
 
-        // TODO: add blacklisting tags from request
+        const bl = this.tags.filter(tag => (tag[0] === "-"));
+        bl.forEach(tag => {
+            res.global.push(tag.substring(1, tag.length));
+            this.tags.splice(this.tags.indexOf(tag), 1);
+        })
 
         return res;
     }

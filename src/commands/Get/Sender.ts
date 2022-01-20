@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import { Blacklist } from "../../database/Blacklists";
 
 export interface SenderOptions {
@@ -28,4 +28,12 @@ export abstract class Sender {
     }
 
     public abstract send(): Promise<void>;
+
+    protected sendError(message: string): void {
+        const embed = new MessageEmbed()
+            .setColor("#FF0000")
+            .setTitle(message);
+        this.message.channel.send({ embeds: [embed] });
+    }
+
 }

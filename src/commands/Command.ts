@@ -10,7 +10,6 @@ export abstract class command implements CommandHandler {
     protected readonly prefix: string;
     protected readonly args: Array<string>;
     protected readonly middlewares: Array<Middleware>;
-    protected readonly blacklist: Blacklist;
     protected readonly flags: Array<string>;
 
     constructor(payload: Payload) {
@@ -20,7 +19,6 @@ export abstract class command implements CommandHandler {
         this.prefix = payload.prefix;
         this.args = payload.args;
         this.middlewares = payload.middlewares;
-        this.blacklist = payload.blacklist;
         this.flags = payload.flags;
     }
 

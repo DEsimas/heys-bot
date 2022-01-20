@@ -80,7 +80,7 @@ export class ImagesSwitcher {
                 this.prev();
             break;
             case this.stopReaction:
-                this.endHandling();
+                if(user.id === this.requesterID) this.endHandling();
             break;
             case this.showReaction:
                 this.doTags = true;
@@ -98,7 +98,7 @@ export class ImagesSwitcher {
                 this.prev();
             break;
             case this.stopReaction:
-                this.endHandling();
+                if(user.id === this.requesterID) this.endHandling();
             break;
             case this.showReaction:
                 this.doTags = false;

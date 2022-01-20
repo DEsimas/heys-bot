@@ -25,6 +25,7 @@ export class Get extends command {
                 blacklist: await this.getBlacklist(),
                 origin: this.site,
                 src: this.getSrc(this.site) || "",
+                flags: this.flags,
                 tags: undefined,
                 doujinID: this.doujinID
             }

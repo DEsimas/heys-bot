@@ -6,6 +6,7 @@ export interface SenderOptions {
     blacklist: Blacklist,
     origin: string,
     src: string,
+    flags: string[],
     tags: string | undefined,
     doujinID: string | undefined
 };
@@ -15,6 +16,7 @@ export abstract class Sender {
     protected readonly blacklist: Blacklist;
     protected readonly origin: string;
     protected readonly src: string;
+    protected readonly flags: string[];
     protected readonly tags: string | undefined;
     protected readonly doujinID: string | undefined;
 
@@ -23,6 +25,7 @@ export abstract class Sender {
         this.blacklist = options.blacklist;
         this.origin = options.origin;
         this.src = options.src;
+        this.flags = options.flags;
         this.tags = options.tags;
         this.doujinID = options.doujinID;
     }

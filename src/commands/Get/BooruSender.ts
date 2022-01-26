@@ -51,6 +51,8 @@ export class BooruSender extends Sender {
     }
 
     private async sendPosts(posts: Array<Post>): Promise<void> {
+        this.message.channel.send({ embeds: [new MessageEmbed().setTitle(`Found ${posts.length} posts`)] });
+
         const embed = new MessageEmbed()
             .setColor("#202225")
             .setTitle("Loading...");

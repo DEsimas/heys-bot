@@ -31,7 +31,7 @@ export class ImagesSwitcher {
     private doTags: boolean;
     private i: number;
 
-    private readonly switcherLiveTime = 12 * 60 * 60 * 1000; // 12h
+    private readonly switcherLiveTime = 60 * 60 * 1000; // 1h
     private readonly nextReaction = "➡️";
     private readonly prevReaction = "⬅️";
     private readonly showReaction = "📋";

@@ -11,7 +11,7 @@
 </table>
 
 ## Using
-This bot can't be added on your server
+This bot can be added on your server using this <a src="https://discord.com/api/oauth2/authorize?client_id=883051590959894538&permissions=0&scope=bot">link</a>
 ## Hosting
 clone repository
 ```

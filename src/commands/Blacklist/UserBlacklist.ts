@@ -20,14 +20,20 @@ export class UserBlacklist extends command {
     public execute(): void {
         switch(this.command?.toLowerCase()) {
             case "add":
-                const site = this.getSrc(this.args[2]);
-                if(site === null) return this.sendError(this.args[2] ? `${this.args[2]} is not supported` : `Check **${this.prefix}help blacklist** for command syntaxis`);
+                let site = this.getSrc(this.args[2]);
+                if(site === null) {
+                    site = "global";
+                    this.tags.push(this.args[2]);
+                }
                 if(this.tags.length === 0) return this.sendError(`Check **${this.prefix}help blacklist** for command syntaxis`);
                 this.manager.add(this.message.author.id, site, this.tags);
             break;
             case "remove":
-                const origin = this.getSrc(this.args[2]);
-                if(origin === null) return this.sendError(this.args[2] ? `${this.args[2]} is not supported` : `Check **${this.prefix}help blacklist** for command syntaxis`);
+                let origin = this.getSrc(this.args[2]);
+                if(origin === null) {
+                    origin = "global";
+                    this.tags.push(this.args[2]);
+                }
                 if(this.tags.length === 0) return this.sendError(`Check **${this.prefix}help blacklist** for command syntaxis`);
                 this.manager.remove(this.message.author.id, origin, this.tags);
             break;

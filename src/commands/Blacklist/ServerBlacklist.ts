@@ -17,23 +17,25 @@ export class ServerBlacklist extends command {
     }
 
     public async execute(): Promise<void> {
+        const serverID = this.message.guild?.id;
+        if(serverID === undefined) return;
         switch(this.command?.toLowerCase()) {
             case "add":
                 if(!(await this.isAdmin())) return this.sendError("This command is avalible only for admins");
                 const site = this.getSrc(this.args[2]);
                 if(site === null) return this.sendError(this.args[2] ? `${this.args[2]} is not supported` : `Check **${this.prefix}help blacklist** for command syntaxis`);
                 if(this.tags.length === 0) return this.sendError(`Check **${this.prefix}help blacklist** for command syntaxis`);
-                this.manager.add(this.message.author.id, site, this.tags);
+                this.manager.add(serverID, site, this.tags);
             break;
             case "remove":
                 if(!(await this.isAdmin())) return this.sendError("This command is avalible only for admins");
                 const origin = this.getSrc(this.args[2]);
                 if(origin === null) return this.sendError(this.args[2] ? `${this.args[2]} is not supported` : `Check **${this.prefix}help blacklist** for command syntaxis`);
                 if(this.tags.length === 0) return this.sendError(`Check **${this.prefix}help blacklist** for command syntaxis`);
-                this.manager.remove(this.message.author.id, origin, this.tags);
+                this.manager.remove(serverID, origin, this.tags);
             break;
             default:
-                this.manager.show(this.message.author.id, this.getSrc(this.args[1]) || undefined);
+                this.manager.show(serverID, this.getSrc(this.args[1]) || undefined);
             break;
         }
     }

@@ -28,12 +28,12 @@ const commands: Array<Command> = [
         multicase: true
     },
     {
-        name: ["userbalcklist", "blacklist", "tags"],
+        name: ["userbalcklist", "blacklist", "tags", "userbalcklists"],
         out: UserBlacklist,
         multicase: true
     },
     {
-        name: ["serverblacklist", "servertags"],
+        name: ["serverblacklist", "servertags", "serverblacklists"],
         out: ServerBlacklist,
         multicase: true
     },

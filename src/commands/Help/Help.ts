@@ -9,7 +9,7 @@ export class Help extends command {
     }
 
     execute(): void {
-        if(this.args[1]?.toLowerCase() === "blacklist") return this.helpBlacklist();
+        if(this.args[1]?.toLowerCase() === "blacklist" || this.args[1]?.toLowerCase() === "tags" || this.args[1]?.toLowerCase() === "blacklists") return this.helpBlacklist();
         this.helpGet();
     }
     
@@ -32,7 +32,7 @@ export class Help extends command {
     private helpBlacklist(): void {
         const embed = new MessageEmbed()
             .setTitle(`Bot has two blacklists: user blacklist(${this.prefix}UserBlacklist) and server blacklist(${this.prefix}ServerBlacklist). User blacklist can be setted up by user personally, while server blacklist is common for all user on server and configurates by administrators`)
-            .addField("Command syntaxis:", `${this.prefix}tags <command> <origin> <tags array>`)
+            .addField("Command syntaxis:", `${this.prefix}<**UserBlacklist** or **ServerBlacklist**> <command> <origin> <tags array>`)
             .addField("<command>", "add, remove. If not stated blacklisted tags will be shown")
             .addField("<origin>", "Site alias or \"global\" for manipulating with global blacklist")
             .addField("<tags array>", "Tags to add/remove");

@@ -120,17 +120,13 @@ export class ImagesSwitcher {
     }
 
     private next(): void {
-        if(this.i !== this.images.length-1){
-            this.i++;
-            this.updateImage();
-        }
+        this.i = (this.i + 1) % this.images.length;
+        this.updateImage();
     }
 
     private prev(): void {
-        if(this.i !== 0) {
-            this.i--;
-            this.updateImage();
-        }
+        this.i = this.i - 1 < 0 ? this.images.length - 1 : this.i - 1;
+        this.updateImage();
     }
 
     private updateImage(): void {

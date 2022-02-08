@@ -28,7 +28,7 @@ export class DoujinSender extends Sender {
 
         let retries = this.retries;
         while (retries) {
-            const doujin = await api.fetchDoujin(Math.floor(Math.random() * 400000));
+            const doujin = await api.fetchDoujin(await api.randomDoujinID());
             if (doujin && !this.isProhibited(doujin) && this.isEnglish(doujin)) {
                 return doujin;
             }

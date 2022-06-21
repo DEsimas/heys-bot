@@ -8,10 +8,8 @@ export class DAO {
     public static readonly ServersBalacklists = new ServersBlacklists();
     public static readonly UsersBlacklists = new UsersBlacklists();
 
-    public static async connect(): Promise<void> {
-        if(!process.env.MONGO) throw new Error("Mongo uri not found");
-
-        connect(process.env.MONGO, error => {
+    public static async connect(uri: string): Promise<void> {
+        connect(uri, error => {
             if (error) {
                 throw new Error("Failed to connect to Mongo");
             }

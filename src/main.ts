@@ -1,6 +1,8 @@
 import { config } from "dotenv";
 import { Bot } from "./Bot";
 
+export { Bot };
+
 config();
 
 if(process.env.MODE == "BOT") {   

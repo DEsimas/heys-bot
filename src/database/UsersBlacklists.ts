@@ -1,9 +1,9 @@
-import { Schema } from "mongoose";
+import { Connection, Schema } from "mongoose";
 import { Blacklist, Blacklists } from "./Blacklists";
 
 export class UsersBlacklists extends Blacklists {
-    constructor() {
-        super("usersblacklists", "userID");
+    constructor(connection: Connection) {
+        super(connection, "usersblacklists", "userID");
     }
 
     public getBlacklistSchema(): Schema<Blacklist> {

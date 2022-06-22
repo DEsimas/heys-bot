@@ -1,4 +1,4 @@
-import { model, Model, Schema } from "mongoose";
+import { Connection, Model, Schema } from "mongoose";
 
 export interface Prefix {
     serverID: string;
@@ -8,8 +8,8 @@ export interface Prefix {
 export class Prefixes {
     private readonly PrefixModel: Model<Prefix>;
 
-    constructor() {
-        this.PrefixModel = model<Prefix>("prefixes", this.getPrefixSchema());
+    constructor(connection: Connection) {
+        this.PrefixModel = connection.model<Prefix>("prefixes", this.getPrefixSchema());
     }
 
     private getPrefixSchema(): Schema<Prefix> {

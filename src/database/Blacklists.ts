@@ -1,4 +1,4 @@
-import { model, Model, Schema } from "mongoose";
+import { Connection, Model, Schema } from "mongoose";
 import { Sites, sitesArray } from "./sites";
 
 export interface Blacklist {
@@ -15,9 +15,9 @@ export abstract class Blacklists {
     protected abstract getBlacklistSchema(): Schema<Blacklist>;
     protected abstract getDefaultBlacklist(id: string): Blacklist;
 
-    constructor(collectionName: string, id: "serverID" | "userID") {
+    constructor(connection: Connection, collectionName: string, id: "serverID" | "userID") {
         this.id = id;
-        this.BlacklistModel = model<Blacklist>(collectionName, this.getBlacklistSchema());
+        this.BlacklistModel = connection.model<Blacklist>(collectionName, this.getBlacklistSchema());
     }
 
     static concat(list1: Blacklist, list2: Blacklist): Blacklist {

@@ -65,4 +65,7 @@ bot.start();
   <li>Commands don't work in DM</li>
   <li>Hentai can be sent to sfw channel</li>
   <li>Sometimes embed stops reacting to emojis</li>
+  <li>Large files can't be displayed</li>
+  <li>A lot of links from realbooru are in wrong format</li>
+  <li>Nhentai not working</li>
 </ul> 

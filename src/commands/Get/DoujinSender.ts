@@ -12,10 +12,6 @@ export class DoujinSender extends Sender {
     }
 
     public async send(): Promise<void> {
-
-        //temporarly disabling nhentai
-        if(1+1===2) return this.sendError("nhentai temporarily unavailable!");
-
         if (this.doujinID?.toLowerCase() === "random" || this.doujinID === undefined) {
             const doujin = await this.fetchRandomDoujin();
             if (doujin === null) return;

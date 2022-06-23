@@ -2,7 +2,7 @@
 
 ## Description
 
-This is discord bot created for getting hentai arts. It provides an interactional embed with images from different websites. There is also a blacklisting system for disabling unwanted posts.
+This is discord bot created for getting hentai arts. It provides an interactional embed with images from different websites. There is also a blacklisting system for disabling unwanted posts. Also works in DMs.
 
 ## Using
 This bot can be added on your server using this [link](https://discord.com/api/oauth2/authorize?client_id=883051590959894538&permissions=0&scope=bot)

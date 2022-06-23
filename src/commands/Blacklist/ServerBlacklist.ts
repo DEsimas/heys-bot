@@ -17,8 +17,12 @@ export class ServerBlacklist extends command {
     }
 
     public async execute(): Promise<void> {
-        const serverID = this.message.guild?.id;
-        if(serverID === undefined) return;
+        let serverID;
+        if(this.message.guild)
+            serverID = this.message.guild.id;
+        else
+            serverID = "DM" + this.message.channelId;
+        
         switch(this.command?.toLowerCase()) {
             case "add":
                 if(!(await this.isAdmin())) return this.sendError("This command is avalible only for admins");

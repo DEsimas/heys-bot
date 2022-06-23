@@ -41,7 +41,6 @@ export class ImagesSwitcher {
         this.message = options.message;
         this.requesterID = options.reuqesterID;
         this.botID = options.botID;
-        this.collector = this.message.createReactionCollector({ dispose: true, filter: (reaciton: MessageReaction, user: User) => (this.filter(reaciton, user)), time: this.switcherLiveTime });
         this.images = options.images;
         this.doTags = options.doTags;
         this.isPublic = options.isPublic;
@@ -54,6 +53,7 @@ export class ImagesSwitcher {
             time: this.switcherLiveTime
         });
 
+        console.log(this.collector);
         
         this.setReactions().then(() => {
             this.collector.on("collect", (reaction, user) => (this.addReaction(reaction, user)));

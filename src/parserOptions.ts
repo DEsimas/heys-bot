@@ -60,10 +60,12 @@ async function setFlags(payload: Payload, next: Next): Promise<void> {
 }
 
 async function setPrefix(payload: Payload, next: Next): Promise<void> {
-    const serverID = payload.message.guild?.id;
-    if(serverID === undefined) return; // exit if message not from a server
+    let serverID;
+    if(payload.message.guild)
+        serverID = payload.message.guild.id;
+    else
+        serverID = "DM" + payload.message.channelId;
 
     payload.prefix = await DAO.Prefixes.getPrefix(serverID);
-
     next(payload);
 }

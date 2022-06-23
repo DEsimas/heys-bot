@@ -1,4 +1,4 @@
-import { Client, Intents } from "discord.js";
+import { Client, Intents, PartialTypes } from "discord.js";
 import { CommandsParser } from "discordjs-commands-parser";
 import { DAO } from "./database/DAO";
 import { getParserOptions } from "./parserOptions";
@@ -8,6 +8,7 @@ export class Bot {
     private readonly mongo_uri: string;
     private readonly client: Client;
     private readonly intents: number[];
+    private readonly partials: PartialTypes[];
 
     constructor(data: {token: string, mongo_uri:string}) {
         this.token = data.token;
@@ -16,10 +17,15 @@ export class Bot {
         this.intents = [
             Intents.FLAGS.GUILDS,                   // interaction with servers
             Intents.FLAGS.GUILD_MESSAGES,           // read messages
+            Intents.FLAGS.DIRECT_MESSAGES,
             Intents.FLAGS.GUILD_MESSAGE_REACTIONS   // read reactions under messages
         ];
 
-        this.client = new Client({ intents: this.intents });
+        this.partials = [
+            "CHANNEL"
+        ];
+
+        this.client = new Client({partials: this.partials, intents: this.intents });
     }
 
     public start(): void {

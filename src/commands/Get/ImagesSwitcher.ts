@@ -52,8 +52,6 @@ export class ImagesSwitcher {
             filter: (reaction, user) => (this.filter(reaction, user)),
             time: this.switcherLiveTime
         });
-
-        console.log(this.collector);
         
         this.setReactions().then(() => {
             this.collector.on("collect", (reaction, user) => (this.addReaction(reaction, user)));

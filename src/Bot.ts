@@ -18,7 +18,8 @@ export class Bot {
             Intents.FLAGS.GUILDS,                   // interaction with servers
             Intents.FLAGS.GUILD_MESSAGES,           // read messages
             Intents.FLAGS.DIRECT_MESSAGES,
-            Intents.FLAGS.GUILD_MESSAGE_REACTIONS   // read reactions under messages
+            Intents.FLAGS.GUILD_MESSAGE_REACTIONS,   // read reactions under messages
+            Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
         ];
 
         this.partials = [

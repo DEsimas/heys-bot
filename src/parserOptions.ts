@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { Client, MessageEmbed } from "discord.js";
 import { Command, Middleware, Next, ParserOptions, Payload } from "discordjs-commands-parser";
 import { ServerBlacklist } from "./commands/Blacklist/ServerBlacklist";
 import { UserBlacklist } from "./commands/Blacklist/UserBlacklist";
@@ -44,7 +44,7 @@ const commands: Array<Command> = [
     }
 ];
 
-const middlewares: Array<Middleware> = [setFlags, setPrefix];
+const middlewares: Array<Middleware> = [setFlags, setPrefix, sendPrefixHelp];
 
 async function setFlags(payload: Payload, next: Next): Promise<void> {
     payload.flags = [];
@@ -62,10 +62,24 @@ async function setFlags(payload: Payload, next: Next): Promise<void> {
 async function setPrefix(payload: Payload, next: Next): Promise<void> {
     let serverID;
     if(payload.message.guild)
-        serverID = payload.message.guild.id;
+    serverID = payload.message.guild.id;
     else
-        serverID = "DM" + payload.message.channelId;
-
+    serverID = "DM" + payload.message.channelId;
+    
     payload.prefix = await DAO.Prefixes.getPrefix(serverID);
+    next(payload);
+}
+
+async function sendPrefixHelp(payload: Payload, next: Next): Promise<void> {
+    const msg = payload.message.content.toLocaleLowerCase()
+    if(msg.search("prefix") != -1) {
+        const prefix = msg.split("prefix")[0];
+        if(prefix != payload.prefix && prefix.length == 1) {
+            const embed = new MessageEmbed();
+            embed.setTitle(`Prefix for this server is ${payload.prefix}`);
+            payload.message.channel.send({embeds: [embed]});
+        }
+    }
+
     next(payload);
 }

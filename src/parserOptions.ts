@@ -44,7 +44,7 @@ const commands: Array<Command> = [
     }
 ];
 
-const middlewares: Array<Middleware> = [setFlags, setPrefix, sendPrefixHelp];
+const middlewares: Array<Middleware> = [setFlags, setServerId, setPrefix, sendPrefixHelp];
 
 async function setFlags(payload: Payload, next: Next): Promise<void> {
     payload.flags = [];
@@ -59,14 +59,16 @@ async function setFlags(payload: Payload, next: Next): Promise<void> {
     next(payload);
 }
 
-async function setPrefix(payload: Payload, next: Next): Promise<void> {
-    let serverID;
+async function setServerId(payload: Payload, next: Next) {
     if(payload.message.guild)
-    serverID = payload.message.guild.id;
+        payload.serverID = payload.message.guild.id;
     else
-    serverID = "DM" + payload.message.channelId;
-    
-    payload.prefix = await DAO.Prefixes.getPrefix(serverID);
+        payload.serverID = "DM" + payload.message.channelId;
+    next(payload);
+}
+
+async function setPrefix(payload: Payload, next: Next): Promise<void> {
+    payload.prefix = await DAO.Prefixes.getPrefix(payload.serverID);
     next(payload);
 }
 
@@ -74,7 +76,7 @@ async function sendPrefixHelp(payload: Payload, next: Next): Promise<void> {
     const msg = payload.message.content.toLocaleLowerCase()
     if(msg.search("prefix") != -1) {
         const prefix = msg.split("prefix")[0];
-        if(prefix != payload.prefix && prefix.length == 1) {
+        if(prefix.length == 1) {
             const embed = new MessageEmbed();
             embed.setTitle(`Prefix for this server is ${payload.prefix}`);
             payload.message.channel.send({embeds: [embed]});

@@ -11,6 +11,7 @@ export abstract class command implements CommandHandler {
     protected readonly args: Array<string>;
     protected readonly middlewares: Array<Middleware>;
     protected readonly flags: Array<string>;
+    protected readonly serverID: string;
 
     constructor(payload: Payload) {
         this.client = payload.client;
@@ -20,11 +21,13 @@ export abstract class command implements CommandHandler {
         this.args = payload.args;
         this.middlewares = payload.middlewares;
         this.flags = payload.flags;
+        this.serverID = payload.serverID;
     }
 
     abstract execute(): void;
 
     protected async isAdmin(): Promise<boolean> {
+        if(this.serverID[0] == "D" && this.serverID[1] == "M") return true; //if message from DM
         const guildMember = await this.message.guild?.members.fetch(this.message.author.id)
         if(!guildMember) return false;
         const isAdmin = guildMember.permissions.has("ADMINISTRATOR");

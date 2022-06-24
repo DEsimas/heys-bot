@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "booru": "^2.5.3",
-    "discord.js": "^13.5.1",
+    "discord.js": "^13.8.1",
     "discordjs-commands-parser": "^3.0.1",
     "dotenv": "^11.0.0",
     "mongoose": "^6.4.0",

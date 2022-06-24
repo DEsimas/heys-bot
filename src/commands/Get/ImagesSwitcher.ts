@@ -1,4 +1,4 @@
-import { Message, MessageOptions, MessageReaction, ReactionCollector, User } from "discord.js";
+import { Message, MessageEditOptions, MessageOptions, MessageReaction, ReactionCollector, User } from "discord.js";
 
 export interface SwitcherOptions {
     message: Message;
@@ -17,7 +17,7 @@ export interface Payload {
 }
 
 export type Image = { url: string, tags?: string[] };
-export type getMessageFunction = (payload: Payload) => MessageOptions;
+export type getMessageFunction = (payload: Payload) => MessageEditOptions;
 
 export class ImagesSwitcher {
     private readonly message: Message;

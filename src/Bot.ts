@@ -1,5 +1,5 @@
 import { Client, Intents, PartialTypes } from "discord.js";
-import { CommandsParser } from "discordjs-commands-parser";
+import { CommandsParser } from "./parser/CommandsParser";
 import { DAO } from "./database/DAO";
 import { getParserOptions } from "./parserOptions";
 

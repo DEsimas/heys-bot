@@ -1,5 +1,5 @@
 import { Client, MessageEmbed } from "discord.js";
-import { Command, Middleware, Next, ParserOptions, Payload } from "discordjs-commands-parser";
+import { Command, Middleware, Next, ParserOptions, Payload } from "./parser/types";
 import { ServerBlacklist } from "./commands/Blacklist/ServerBlacklist";
 import { UserBlacklist } from "./commands/Blacklist/UserBlacklist";
 import { Get } from "./commands/Get/Get";

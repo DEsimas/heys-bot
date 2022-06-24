@@ -1,4 +1,4 @@
-import { Payload } from "discordjs-commands-parser";
+import { Payload } from "./../../parser/types";
 import { DAO } from "../../database/DAO";
 import { command } from "./../Command"
 import { BlacklistManager } from "./BlacklistManager";

@@ -1,6 +1,5 @@
 import { Client, Message, MessageEmbed } from "discord.js";
-import { Command, CommandHandler, Middleware, Payload } from "discordjs-commands-parser";
-import { Blacklist } from "../database/Blacklists";
+import { Command, CommandHandler, Middleware, Payload } from "./../parser/types";
 import { sites, Sites, sitesArray } from "../database/sites";
 
 export abstract class command implements CommandHandler {

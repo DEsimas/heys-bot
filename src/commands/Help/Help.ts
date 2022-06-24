@@ -1,5 +1,5 @@
 import { MessageEmbed } from "discord.js";
-import { Payload } from "discordjs-commands-parser";
+import { Payload } from "./../../parser/types";
 import { command } from "./../Command";
 import { sites, sitesArray } from "./../../database/sites";
 

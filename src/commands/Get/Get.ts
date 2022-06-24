@@ -20,6 +20,10 @@ export class Get extends command {
     }
 
     public async execute(): Promise<void> {
+        if(this.getSrc(this.site) != "safebooru" && JSON.parse(JSON.stringify(this.message.channel)).nsfw === false) {
+            return this.sendError("Hentai is only avalible in nsfw channels");
+        }
+
         if(this.getSrc(this.site) === "nhentai") {
             let src = this.getSrc(this.site);
             if(src === "global") src = null;

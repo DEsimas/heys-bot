@@ -23,7 +23,7 @@ export class BooruSender extends Sender {
                 }
                 this.sendPosts(filtered);
             }).catch(err => {
-                this.sendError("Resource not responding. Try again");
+                this.sendError("Resource is not responding. Try again");
             });
         } catch {
             this.sendError("This site not supported");

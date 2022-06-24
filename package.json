@@ -1,33 +1,33 @@
 {
   "name": "heys-bot",
-  "version": "7.2.4",
+  "version": "7.2.5",
   "description": "Discord bot for getting lewd images from different boorus and nhentai",
   "keywords": [
-      "nsfw",
-      "discord",
-      "bot",
-      "node",
-      "mongoose",
-      "discordjsv13"
+    "nsfw",
+    "discord",
+    "bot",
+    "node",
+    "mongoose",
+    "discordjsv13"
   ],
   "homepage": "https://github.com/DEsimas/heys-bot",
   "bugs": {
-    "url" : "https://github.com/DEsimas/heys-bot/issues",
-    "email" : "simasuh@gmail.com"
+    "url": "https://github.com/DEsimas/heys-bot/issues",
+    "email": "simasuh@gmail.com"
   },
   "license": "unlicensed",
   "author": {
-      "name": "Serafim Sukharev",
-      "email": "simasuh@gmail.com",
-      "url": "https://github.com/DEsimas"
+    "name": "Serafim Sukharev",
+    "email": "simasuh@gmail.com",
+    "url": "https://github.com/DEsimas"
   },
   "files": [
     "dist/**/*"
   ],
   "main": "./dist/main.js",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/DEsimas/heys-bot"
+    "type": "git",
+    "url": "https://github.com/DEsimas/heys-bot"
   },
   "scripts": {
     "upload": "npm run build && npm pack && npm publish",
@@ -39,7 +39,6 @@
   "dependencies": {
     "booru": "^2.5.3",
     "discord.js": "^13.8.1",
-    "discordjs-commands-parser": "^3.0.1",
     "dotenv": "^11.0.0",
     "mongoose": "^6.4.0",
     "nhentai": "^3.0.0"

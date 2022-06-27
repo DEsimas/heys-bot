@@ -7,6 +7,7 @@ export interface SwitcherOptions {
     images: Array<Image>;
     doTags: boolean;
     isPublic: boolean;
+    timer?: number;
     getMsg: getMessageFunction;
 };
 
@@ -27,6 +28,7 @@ export class ImagesSwitcher {
     private readonly isPublic: boolean;
     private readonly collector: ReactionCollector;
     private readonly getMsg: getMessageFunction;
+    private readonly interval: NodeJS.Timer | undefined;
 
     private doTags: boolean;
     private i: number;
@@ -46,6 +48,10 @@ export class ImagesSwitcher {
         this.isPublic = options.isPublic;
         this.getMsg = options.getMsg;
         this.i = 0;
+
+        if(options.timer) {
+            this.interval = setInterval(() => this.next(), options.timer)
+        }
 
         this.collector = this.message.createReactionCollector({
             dispose: true,
@@ -106,6 +112,10 @@ export class ImagesSwitcher {
     }
 
     private endHandling(): void {
+        if(this.interval) {
+            clearInterval(this.interval);
+        }
+        
         if(this.message.deletable) this.message.delete();
     }
 

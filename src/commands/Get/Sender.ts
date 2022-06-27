@@ -43,9 +43,9 @@ export abstract class Sender {
         this.message.channel.send({ embeds: [embed] });
     }
 
-    protected getTimer(flags: Array<string>): number | undefined {
+    protected getTimer(): number | undefined {
         let timer = 0;
-        flags.forEach((elem) => {
+        this.flags.forEach((elem) => {
             if (elem.search("--timer") != -1 || elem.search("--timeout") != -1 || elem.search("--time") != -1 || elem.search("--countdown") != -1) {
                 elem = elem.replace("--timer", "");
                 

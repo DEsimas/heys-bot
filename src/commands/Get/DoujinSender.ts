@@ -88,6 +88,7 @@ export class DoujinSender extends Sender {
             images: images,
             doTags: false,
             isPublic: this.flags.includes("--public"),
+            timer: this.getTimer(),
             getMsg: (payload: Payload) => {
                 const embed = new MessageEmbed()
                     .setTitle(`**${payload.i+1}/${payload.images.length}**`)

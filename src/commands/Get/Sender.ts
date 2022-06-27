@@ -59,7 +59,6 @@ export abstract class Sender {
                     secs = secs.split("").reverse().join("");
                     timer += Number(secs) * 1000;
                     elem = elem.replace(secs+"s", "Lida");
-                    console.log(elem);
                     pos = elem.search("s");
                 }
 
@@ -74,7 +73,6 @@ export abstract class Sender {
                     mins = mins.split("").reverse().join("");
                     timer += Number(mins) * 60 * 1000;
                     elem = elem.replace(mins+"m", "Lida");
-                    console.log(elem);
                     pos = elem.search("s");
                 }
             }

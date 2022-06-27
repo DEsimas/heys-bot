@@ -43,4 +43,43 @@ export abstract class Sender {
         this.message.channel.send({ embeds: [embed] });
     }
 
+    protected getTimer(flags: Array<string>): number | undefined {
+        let timer = 0;
+        flags.forEach((elem) => {
+            if (elem.search("--timer") != -1 || elem.search("--timeout") != -1 || elem.search("--time") != -1 || elem.search("--countdown") != -1) {
+                elem = elem.replace("--timer", "");
+                
+                let pos = elem.search("s");
+                while(pos != -1) {
+                    let secs = "";
+                    for(let i = 1; true; i++)
+                        if(!isNaN(Number(elem[pos-i])))secs += elem[pos-i];
+                        else break;
+                    
+                    secs = secs.split("").reverse().join("");
+                    timer += Number(secs) * 1000;
+                    elem = elem.replace(secs+"s", "Lida");
+                    console.log(elem);
+                    pos = elem.search("s");
+                }
+
+                pos = elem.search("m");
+
+                while(pos != -1) {
+                    let mins = "";
+                    for(let i = 1; true; i++)
+                        if(!isNaN(Number(elem[pos-i])))mins += elem[pos-i];
+                        else break;
+                    
+                    mins = mins.split("").reverse().join("");
+                    timer += Number(mins) * 60 * 1000;
+                    elem = elem.replace(mins+"m", "Lida");
+                    console.log(elem);
+                    pos = elem.search("s");
+                }
+            }
+        });
+        if (timer == 0 || isNaN(timer)) return undefined;
+        return timer;
+    }
 }

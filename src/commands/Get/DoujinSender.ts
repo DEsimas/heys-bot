@@ -8,7 +8,7 @@ export class DoujinSender extends Sender {
     private readonly retries = 20;
 
     constructor(options: SenderOptions) {
-        super(options)
+        super(options);
     }
 
     public async send(): Promise<void> {

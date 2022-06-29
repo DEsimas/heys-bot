@@ -84,4 +84,22 @@ export class PostsRatings {
             })).save();
         }
     }
+
+    public async RemoveDislike(postURL: string): Promise<PostRating> {
+        const rating = await this.PostsRatingModel.findOne({ postURL: postURL });
+        if(rating) {
+            await this.PostsRatingModel.updateOne({ postURL: postURL }, { dislikes: rating.dislikes-1 });
+            return {
+                postURL: postURL,
+                likes: rating.likes,
+                dislikes: rating.dislikes-1
+            }
+        } else {
+            return await (new this.PostsRatingModel({
+                postURL: postURL,
+                likes: 0,
+                dislikes: -1
+            })).save();
+        }
+    }
 }

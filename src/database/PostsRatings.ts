@@ -66,4 +66,22 @@ export class PostsRatings {
             })).save();
         }
     }
+
+    public async RemoveLike(postURL: string): Promise<PostRating> {
+        const rating = await this.PostsRatingModel.findOne({ postURL: postURL });
+        if(rating) {
+            await this.PostsRatingModel.updateOne({ postURL: postURL }, { likes: rating.likes-1 });
+            return {
+                postURL: postURL,
+                likes: rating.likes-1,
+                dislikes: rating.dislikes
+            }
+        } else {
+            return await (new this.PostsRatingModel({
+                postURL: postURL,
+                likes: -1,
+                dislikes: 0
+            })).save();
+        }
+    }
 }

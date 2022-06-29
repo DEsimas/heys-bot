@@ -20,4 +20,14 @@ export class UsersRatings {
             dislikedPosts: [String]
         });
     }
+
+    public async GetRating(userID: string): Promise<UserRating> {
+        const rating = await this.UsersRatingsModel.findOne({ userID: userID });
+        if(rating) return rating;
+        return await (new this.UsersRatingsModel({
+            userID: userID,
+            likedPosts: [],
+            dislikedPosts: []
+        })).save();
+    }
 }

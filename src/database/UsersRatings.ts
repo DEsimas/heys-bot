@@ -50,7 +50,7 @@ export class UsersRatings {
             userID: userID,
             likedPosts: [],
             dislikedPosts: []
-        }));
+        })).save();
     }
 
     public async AddDislike(userID: string, postURL: string): Promise<UserRating> {
@@ -72,7 +72,7 @@ export class UsersRatings {
             userID: userID,
             likedPosts: [],
             dislikedPosts: []
-        }));
+        })).save();
     }
 
     public async RemoveLike(userID: string, postURL: string): Promise<UserRating> {
@@ -93,7 +93,7 @@ export class UsersRatings {
             userID: userID,
             likedPosts: [],
             dislikedPosts: []
-        }));
+        })).save();
     }
 
     public async RemoveDislike(userID: string, postURL: string): Promise<UserRating> {
@@ -114,6 +114,6 @@ export class UsersRatings {
             userID: userID,
             likedPosts: [],
             dislikedPosts: []
-        }));
+        })).save();
     }
 }

@@ -21,6 +21,16 @@ export class PostsRatings {
         });
     }
 
+    public async GetRating(postURL: string): Promise<PostRating> {
+        const rating = await this.PostsRatingModel.findOne({ postURL: postURL });
+        if(rating) return rating;
+        return await (new this.PostsRatingModel({
+            postURL: postURL,
+            likes: 0,
+            dislikes: 0
+        })).save();
+    }
+
     public async AddLike(postURL: string): Promise<PostRating> {
         const rating = await this.PostsRatingModel.findOne({ postURL: postURL });
         if(rating) {

@@ -21,12 +21,17 @@ export class PostsRatings {
         });
     }
 
-    public async AddLike(postURL: string): Promise<void> {
+    public async AddLike(postURL: string): Promise<PostRating> {
         const rating = await this.PostsRatingModel.findOne({ postURL: postURL });
         if(rating) {
             await this.PostsRatingModel.updateOne({ postURL: postURL }, { likes: rating.likes+1 });
+            return {
+                postURL: postURL,
+                likes: rating.likes+1,
+                dislikes: rating.dislikes
+            }
         } else {
-            await (new this.PostsRatingModel({
+            return await (new this.PostsRatingModel({
                 postURL: postURL,
                 likes: 1,
                 dislikes: 0
@@ -34,12 +39,17 @@ export class PostsRatings {
         }
     }
 
-    public async AddDislike(postURL: string): Promise<void> {
+    public async AddDislike(postURL: string): Promise<PostRating> {
         const rating = await this.PostsRatingModel.findOne({ postURL: postURL });
         if(rating) {
-            await this.PostsRatingModel.updateOne({ postURL: postURL }, { likes: rating.dislikes+1 });
+            await this.PostsRatingModel.updateOne({ postURL: postURL }, { dislikes: rating.dislikes+1 });
+            return {
+                postURL: postURL,
+                likes: rating.likes,
+                dislikes: rating.dislikes+1
+            }
         } else {
-            await (new this.PostsRatingModel({
+            return await (new this.PostsRatingModel({
                 postURL: postURL,
                 likes: 0,
                 dislikes: 1

@@ -20,4 +20,17 @@ export class PostsRatings {
             dislikes: Number
         });
     }
+
+    public async AddLike(postURL: string): Promise<void> {
+        const rating = await this.PostsRatingModel.findOne({ postURL: postURL });
+        if(rating) {
+            await this.PostsRatingModel.updateOne({ postURL: postURL }, { likes: rating.likes+1 });
+        } else {
+            await (new this.PostsRatingModel({
+                postURL: postURL,
+                likes: 1,
+                dislikes: 0
+            })).save();
+        }
+    }
 }

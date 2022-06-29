@@ -95,4 +95,25 @@ export class UsersRatings {
             dislikedPosts: []
         }));
     }
+
+    public async RemoveDislike(userID: string, postURL: string): Promise<UserRating> {
+        const rating = await this.UsersRatingsModel.findOne({ userID: userID });
+        if(rating) {
+            if(rating.dislikedPosts.includes(postURL)) {
+                let dislikedPosts = rating.dislikedPosts.filter(val => (val != postURL));
+                await this.UsersRatingsModel.updateOne({ userID: userID }, { dislikedPosts: dislikedPosts });
+                return {
+                    userID: userID,
+                    likedPosts: rating.likedPosts,
+                    dislikedPosts: dislikedPosts
+                }
+            }
+            return rating;
+        }
+        else return await (new this.UsersRatingsModel({
+            userID: userID,
+            likedPosts: [],
+            dislikedPosts: []
+        }));
+    }
 }

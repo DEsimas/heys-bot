@@ -7,7 +7,7 @@ import { createConnection } from "mongoose";
 
 export class DAO {
     public static Prefixes: Prefixes;
-    public static PostsRaitings: PostsRatings;
+    public static PostsRatings: PostsRatings;
     public static ServersBalacklists: ServersBlacklists;
     public static UsersBlacklists: UsersBlacklists;
 
@@ -15,7 +15,7 @@ export class DAO {
         const connection = createConnection(uri);
 
         this.Prefixes = new Prefixes(connection);
-        this.PostsRaitings = new PostsRatings(connection);
+        this.PostsRatings = new PostsRatings(connection);
         this.ServersBalacklists = new ServersBlacklists(connection);
         this.UsersBlacklists = new UsersBlacklists(connection);
     }

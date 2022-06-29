@@ -10,7 +10,7 @@ export class PostsRatings {
     private readonly PostsRatingModel: Model<PostRating>;
 
     constructor(connection: Connection) {
-        this.PostsRatingModel = connection.model<PostRating>("postsRaitings", this.getPostRatingSchema());
+        this.PostsRatingModel = connection.model<PostRating>("postsRatings", this.getPostRatingSchema());
     }
 
     private getPostRatingSchema(): Schema<PostRating> {

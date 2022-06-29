@@ -30,4 +30,26 @@ export class UsersRatings {
             dislikedPosts: []
         })).save();
     }
+
+    public async AddLike(userID: string, postURL: string): Promise<UserRating> {
+        const rating = await this.UsersRatingsModel.findOne({ userID: userID });
+        if(rating) {
+            if(!rating.likedPosts.includes(postURL)) {
+                let likedPosts = rating.likedPosts;
+                likedPosts.push(postURL);
+                await this.UsersRatingsModel.updateOne({ userID: userID }, { likedPosts: likedPosts });
+                return {
+                    userID: userID,
+                    likedPosts: likedPosts,
+                    dislikedPosts: rating.dislikedPosts
+                }
+            }
+            return rating;
+        }
+        else return await (new this.UsersRatingsModel({
+            userID: userID,
+            likedPosts: [],
+            dislikedPosts: []
+        }));
+    }
 }

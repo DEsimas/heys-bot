@@ -4,6 +4,7 @@ import * as Booru from "booru";
 import { Sender, SenderOptions } from "./Sender";
 import { MessageEmbed } from "discord.js";
 import { Image, ImagesSwitcher, Payload } from "./ImagesSwitcher";
+import { DAO } from "../../database/DAO";
 
 export class BooruSender extends Sender {
     constructor(options: SenderOptions) {
@@ -90,8 +91,10 @@ export class BooruSender extends Sender {
                     return tags.slice(0, -2);
                 }
 
+                const rating = await DAO.Rating.GetPostRating(payload.images[payload.i].url);
+
                 if (isVideo()) {
-                    return { content: `**${i + 1} / ${images.length}**${parseTags() && doTags ? `\n**Tags:** ${parseTags()}` : ""}\n${images[i].url}`, embeds: [] };
+                    return { content: `**${i + 1} / ${images.length}**\n**${rating.likes} 👍 / ${rating.dislikes} 👎**${parseTags() && doTags ? `\n**Tags:** ${parseTags()}` : ""}\n${images[i].url}`, embeds: [] };
                 }
 
                 const embed = new MessageEmbed()
@@ -99,7 +102,7 @@ export class BooruSender extends Sender {
                     .setColor("#202225")
                     .setImage(images[i].url);
 
-                return { content: `${parseTags() && doTags ? `\n**Tags:** ${parseTags()}` : "Enjoy :)"}`, embeds: [embed] };
+                return { content: `**${rating.likes} 👍 / ${rating.dislikes} 👎**\n${parseTags() && doTags ? `\n**Tags:** ${parseTags()}` : "Enjoy :)"}`, embeds: [embed] };
             }
         });
     }

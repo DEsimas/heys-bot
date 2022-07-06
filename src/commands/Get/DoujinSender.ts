@@ -87,6 +87,7 @@ export class DoujinSender extends Sender {
             botID: this.botID,
             images: images,
             doTags: false,
+            doRating: false,
             isPublic: this.flags.includes("--public"),
             timer: this.getTimer(),
             getMsg: (payload: Payload) => {

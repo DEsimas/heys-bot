@@ -7,7 +7,6 @@ export interface SwitcherOptions {
     images: Array<Image>;
     doTags: boolean;
     isPublic: boolean;
-    doRating: boolean;
     timer?: number;
     getMsg: getMessageFunction;
 };
@@ -15,7 +14,6 @@ export interface SwitcherOptions {
 export interface Payload {
     images: Array<Image>,
     doTags: boolean,
-    doRating: boolean
     i: number
 }
 
@@ -31,7 +29,6 @@ export class ImagesSwitcher {
     private readonly collector: ReactionCollector;
     private readonly getMsg: getMessageFunction;
     private readonly interval: NodeJS.Timer | undefined;
-    private readonly doRating: boolean;
 
     private doTags: boolean;
     private i: number;
@@ -49,7 +46,6 @@ export class ImagesSwitcher {
         this.images = options.images;
         this.doTags = options.doTags;
         this.isPublic = options.isPublic;
-        this.doRating = options.doRating;
         this.getMsg = options.getMsg;
         this.i = 0;
 
@@ -142,6 +138,6 @@ export class ImagesSwitcher {
     }
 
     private updateImage(): void {
-        this.message.edit(this.getMsg({ images: this.images, doTags: this.doTags, doRating: this.doRating, i: this.i }));
+        this.message.edit(this.getMsg({ images: this.images, doTags: this.doTags, i: this.i }));
     }
 }

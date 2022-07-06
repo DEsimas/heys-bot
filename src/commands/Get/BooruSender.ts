@@ -67,7 +67,6 @@ export class BooruSender extends Sender {
             doTags: true,
             botID: this.botID,
             isPublic: this.flags.includes("--public"),
-            doRating: true,
             images: images,
             timer: this.getTimer(),
             getMsg: (payload: Payload) => {

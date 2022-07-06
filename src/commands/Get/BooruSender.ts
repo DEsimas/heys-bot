@@ -69,7 +69,7 @@ export class BooruSender extends Sender {
             isPublic: this.flags.includes("--public"),
             images: images,
             timer: this.getTimer(),
-            getMsg: (payload: Payload) => {
+            getMsg: async (payload: Payload) => {
                 const videoExtensions = [".mp4", ".mov", ".avi", ".webm", ".flv", ".mkv", ".wmv"];
                 const i = payload.i;
                 const images = payload.images;

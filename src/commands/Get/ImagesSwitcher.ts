@@ -18,7 +18,7 @@ export interface Payload {
 }
 
 export type Image = { url: string, tags?: string[] };
-export type getMessageFunction = (payload: Payload) => MessageEditOptions;
+export type getMessageFunction = (payload: Payload) => Promise<MessageEditOptions>;
 
 export class ImagesSwitcher {
     private readonly message: Message;
@@ -137,7 +137,7 @@ export class ImagesSwitcher {
         this.updateImage();
     }
 
-    private updateImage(): void {
-        this.message.edit(this.getMsg({ images: this.images, doTags: this.doTags, i: this.i }));
+    private async updateImage(): Promise<void> {
+        this.message.edit(await this.getMsg({ images: this.images, doTags: this.doTags, i: this.i }));
     }
 }

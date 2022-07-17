@@ -1,56 +1,70 @@
-import { Message, MessageEditOptions, MessageOptions, MessageReaction, ReactionCollector, User } from "discord.js";
-
-export interface SwitcherOptions {
-    message: Message;
-    reuqesterID: string;
-    botID: string;
-    images: Array<Image>;
-    doTags: boolean;
-    isPublic: boolean;
-    timer?: number;
-    getMsg: getMessageFunction;
-};
-
-export interface Payload {
-    images: Array<Image>,
-    doTags: boolean,
-    i: number
-}
-
-export type Image = { url: string, tags?: string[] };
-export type getMessageFunction = (payload: Payload) => Promise<MessageEditOptions>;
+import { Message, MessageReaction, ReactionCollector, User } from "discord.js";
+import { SwitcherOptions, Image, option, getMessageFunction, ImagesSwitcherFields } from "./ImagesSwitcherTypes";
 
 export class ImagesSwitcher {
-    private readonly message: Message;
-    private readonly requesterID: string;
-    private readonly botID: string;
-    private readonly images: Array<Image>;
-    private readonly isPublic: boolean;
-    private readonly collector: ReactionCollector;
-    private readonly getMsg: getMessageFunction;
-    private readonly interval: NodeJS.Timer | undefined;
-
-    private doTags: boolean;
+    private message: Message;
+    private requesterID: string;
+    private botID: string;
+    private images: Array<Image>;
+    private isPublic: boolean;
+    private collector: ReactionCollector;
+    private getMsg: getMessageFunction;
+    private interval: NodeJS.Timer | undefined;
+    private optionsList: Array<option>
     private i: number;
+    private isDeleted = false;
 
     private readonly switcherLiveTime = 60 * 60 * 1000; // 1h
-    private readonly nextReaction = "➡️";
-    private readonly prevReaction = "⬅️";
-    private readonly showReaction = "📋";
-    private readonly stopReaction = "🛑";
 
     constructor(options: SwitcherOptions) {
+        this.optionsList = [];
         this.message = options.message;
         this.requesterID = options.reuqesterID;
         this.botID = options.botID;
         this.images = options.images;
-        this.doTags = options.doTags;
         this.isPublic = options.isPublic;
         this.getMsg = options.getMsg;
         this.i = 0;
 
+        this.optionsList.push({
+            reaction: "⬅️",
+            callback: async (payload) => {
+                const res = Object.create(payload);
+                this.i = this.i - 1 < 0 ? this.images.length - 1 : this.i - 1;
+                return res;
+            }
+        });
+
+        this.optionsList.push({
+            reaction: "🛑",
+            callback: async (payload) => {
+                this.isDeleted = true;
+                if(payload.message.deletable) payload.message.delete();
+                if(payload.interval) clearInterval(payload.interval);
+                return payload;
+            }
+        });
+
+        if(options.options) {
+            options.options.forEach(o => {
+                this.optionsList.push({
+                    reaction: o.reaction,
+                    callback: o.callback
+                });
+            });
+        }
+
+        this.optionsList.push({
+            reaction: "➡️",
+            callback: async (payload) => {
+                const res = Object.create(payload);
+                this.i = (this.i + 1) % this.images.length;
+                return res;
+            }
+        })
+
         if(options.timer) {
-            this.interval = setInterval(() => this.next(), options.timer)
+            this.interval = setInterval(() => this.optionsList[this.optionsList.length-1].callback(this.getPayload()), options.timer)
         }
 
         this.collector = this.message.createReactionCollector({
@@ -60,55 +74,42 @@ export class ImagesSwitcher {
         });
         
         this.setReactions().then(() => {
-            this.collector.on("collect", (reaction, user) => (this.addReaction(reaction, user)));
-            this.collector.on("remove", (reaction, user) => (this.removeReaction(reaction, user)));
+            this.collector.on("collect", (reaction, user) => (this.handle(reaction, user)));
+            this.collector.on("remove", (reaction, user) => (this.handle(reaction, user)));
             this.collector.on("end", () => (this.endHandling()));
             this.updateImage();
-        })
+        });
     }
 
     private filter(reaction: MessageReaction, user: User): boolean {
-        return (reaction.emoji.name === this.nextReaction ||
-                reaction.emoji.name === this.prevReaction ||
-                reaction.emoji.name === this.stopReaction ||
-                reaction.emoji.name === this.showReaction) &&
-                ((user.id === this.requesterID || this.isPublic) && user.id != this.botID);
+        let isReaction = false;
+        for(let i = 0; i < this.optionsList.length; i++) {
+            if(reaction.emoji.name === this.optionsList[i].reaction) {
+                isReaction = true;
+                break;
+            }
+        }
+        return isReaction && ((user.id === this.requesterID || this.isPublic) && user.id != this.botID);
     }
 
-    private addReaction(reaction: MessageReaction, user: User): void {
-        switch (reaction.emoji.name) {
-            case this.nextReaction:
-                this.next();
-            break;
-            case this.prevReaction:
-                this.prev();
-            break;
-            case this.stopReaction:
-                if(user.id === this.requesterID) this.endHandling();
-            break;
-            case this.showReaction:
-                this.doTags = true;
-                this.updateImage();
-            break;
+    private async handle(reaction: MessageReaction, user: User): Promise<void> {
+        for(let i = 0; i < this.optionsList.length; i++) {
+            if(reaction.emoji.name === this.optionsList[i].reaction) {
+                await this.optionsList[i].callback(this.getPayload());
+                break;
+            }
+        }
+        if(!this.isDeleted) this.updateImage();
+    }
+
+    private async setReactions(): Promise<void> {
+        for(let i = 0; i < this.optionsList.length; i++) {
+            await this.message.react(this.optionsList[i].reaction);
         }
     }
 
-    private removeReaction(reaction: MessageReaction, user: User): void {
-        switch (reaction.emoji.name) {
-            case this.nextReaction:
-                this.next();
-            break;
-            case this.prevReaction:
-                this.prev();
-            break;
-            case this.stopReaction:
-                if(user.id === this.requesterID) this.endHandling();
-            break;
-            case this.showReaction:
-                this.doTags = false;
-                this.updateImage();
-            break;
-        }
+    private async updateImage(): Promise<void> {
+        this.message.edit(await this.getMsg({ message: this.message, images: this.images, i: this.i }));
     }
 
     private endHandling(): void {
@@ -117,27 +118,21 @@ export class ImagesSwitcher {
         }
         
         if(this.message.deletable) this.message.delete();
+        this.isDeleted = true;
     }
 
-    private async setReactions(): Promise<void> {
-        await this.message.react(this.prevReaction);
-        await this.message.react(this.stopReaction);
-        if(this.doTags) await this.message.react(this.showReaction);
-        await this.message.react(this.nextReaction);
-        this.doTags = false;
-    }
-
-    private next(): void {
-        this.i = (this.i + 1) % this.images.length;
-        this.updateImage();
-    }
-
-    private prev(): void {
-        this.i = this.i - 1 < 0 ? this.images.length - 1 : this.i - 1;
-        this.updateImage();
-    }
-
-    private async updateImage(): Promise<void> {
-        this.message.edit(await this.getMsg({ images: this.images, doTags: this.doTags, i: this.i }));
+    private getPayload(): ImagesSwitcherFields {
+        return {
+            message: this.message,
+            requesterID: this.requesterID,
+            botID: this.botID,
+            images: this.images,
+            isPublic: this.isPublic,
+            collector: this.collector,
+            getMsg: this.getMsg,
+            interval: this.interval,
+            optionsList: this.optionsList,
+            i: this.i
+        }
     }
 }

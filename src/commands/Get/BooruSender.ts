@@ -3,7 +3,8 @@ import SearchResults from "booru/dist/structures/SearchResults";
 import * as Booru from "booru";
 import { Sender, SenderOptions } from "./Sender";
 import { MessageEmbed } from "discord.js";
-import { Image, ImagesSwitcher, Payload } from "./ImagesSwitcher";
+import { ImagesSwitcher } from "./ImagesSwitcher";
+import { Image, Payload } from "./ImagesSwitcherTypes";
 import { DAO } from "../../database/DAO";
 
 export class BooruSender extends Sender {
@@ -65,7 +66,6 @@ export class BooruSender extends Sender {
         new ImagesSwitcher({
             message: msg,
             reuqesterID: this.message.author.id,
-            doTags: true,
             botID: this.botID,
             isPublic: this.flags.includes("--public"),
             images: images,
@@ -74,7 +74,6 @@ export class BooruSender extends Sender {
                 const videoExtensions = [".mp4", ".mov", ".avi", ".webm", ".flv", ".mkv", ".wmv"];
                 const i = payload.i;
                 const images = payload.images;
-                const doTags = payload.doTags;
 
                 function isVideo(): boolean {
                     const t = images[i].url.split(".");
@@ -94,7 +93,7 @@ export class BooruSender extends Sender {
                 const rating = await DAO.Rating.GetPostRating(payload.images[payload.i].url);
 
                 if (isVideo()) {
-                    return { content: `**${i + 1} / ${images.length}**\n**${rating.likes} 👍 / ${rating.dislikes} 👎**${parseTags() && doTags ? `\n**Tags:** ${parseTags()}` : ""}\n${images[i].url}`, embeds: [] };
+                    return { content: `**${i + 1} / ${images.length}**\n**${rating.likes} 👍 / ${rating.dislikes} 👎**`, embeds: [] };
                 }
 
                 const embed = new MessageEmbed()
@@ -102,7 +101,7 @@ export class BooruSender extends Sender {
                     .setColor("#202225")
                     .setImage(images[i].url);
 
-                return { content: `**${rating.likes} 👍 / ${rating.dislikes} 👎**\n${parseTags() && doTags ? `\n**Tags:** ${parseTags()}` : "Enjoy :)"}`, embeds: [embed] };
+                return { content: `**${rating.likes} 👍 / ${rating.dislikes} 👎**`, embeds: [embed] };
             }
         });
     }

@@ -1,7 +1,7 @@
 import { MessageEmbed } from "discord.js";
 import { API, Doujin } from "nhentai";
-import { Image } from "./ImagesSwitcher";
-import { ImagesSwitcher, Payload } from "./ImagesSwitcher";
+import { ImagesSwitcher } from "./ImagesSwitcher";
+import { Image, Payload} from "./ImagesSwitcherTypes"
 import { Sender, SenderOptions } from "./Sender";
 
 export class DoujinSender extends Sender {
@@ -86,7 +86,6 @@ export class DoujinSender extends Sender {
             reuqesterID: this.message.author.id,
             botID: this.botID,
             images: images,
-            doTags: false,
             isPublic: this.flags.includes("--public"),
             timer: this.getTimer(),
             getMsg: async (payload: Payload) => {

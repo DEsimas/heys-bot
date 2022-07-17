@@ -86,6 +86,7 @@ export class DoujinSender extends Sender {
             reuqesterID: this.message.author.id,
             botID: this.botID,
             images: images,
+            options: [],
             isPublic: this.flags.includes("--public"),
             timer: this.getTimer(),
             getMsg: async (payload: Payload) => {

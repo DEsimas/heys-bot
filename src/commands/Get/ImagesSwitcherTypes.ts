@@ -6,9 +6,9 @@ export interface SwitcherOptions {
     botID: string;
     images: Array<Image>;
     isPublic: boolean;
+    options: Array<Options>;
     getMsg: getMessageFunction;
     timer?: number;
-    options?: Array<option>;
 };
 
 export type Image = {
@@ -24,22 +24,11 @@ export interface Payload {
 
 export type getMessageFunction = (payload: Payload) => Promise<MessageEditOptions>;
 
-export type optionCallback = (payload: ImagesSwitcherFields) => Promise<ImagesSwitcherFields>;
+export type optionCallback = () => Promise<void>;
 
 export interface option {
     reaction: string;
     callback: optionCallback;
 };
 
-export interface ImagesSwitcherFields {
-    message: Message;
-    requesterID: string;
-    botID: string;
-    images: Array<Image>;
-    isPublic: boolean;
-    collector: ReactionCollector;
-    getMsg: getMessageFunction;
-    interval: NodeJS.Timer | undefined;
-    optionsList: Array<option>;
-    i: number;
-};
+export type Options = "tags" | "like" | "unlike" | "dislike" | "undislike";

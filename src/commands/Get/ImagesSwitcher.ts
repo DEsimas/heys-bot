@@ -1,70 +1,61 @@
 import { Message, MessageReaction, ReactionCollector, User } from "discord.js";
-import { SwitcherOptions, Image, option, getMessageFunction, ImagesSwitcherFields } from "./ImagesSwitcherTypes";
+import { SwitcherOptions, Image, option, getMessageFunction } from "./ImagesSwitcherTypes";
 
 export class ImagesSwitcher {
-    private message: Message;
-    private requesterID: string;
-    private botID: string;
-    private images: Array<Image>;
-    private isPublic: boolean;
-    private collector: ReactionCollector;
-    private getMsg: getMessageFunction;
-    private interval: NodeJS.Timer | undefined;
-    private optionsList: Array<option>
-    private i: number;
-    private isDeleted = false;
-
+    private readonly message: Message;
+    private readonly requesterID: string;
+    private readonly botID: string;
+    private readonly images: Array<Image>;
+    private readonly isPublic: boolean;
+    private readonly collector: ReactionCollector;
+    private readonly getMsg: getMessageFunction;
+    private readonly interval: NodeJS.Timer | undefined;
+    private readonly options: Array<option>;
+    
     private readonly switcherLiveTime = 60 * 60 * 1000; // 1h
+    
+    private i: number;
+    private isDeleted: boolean;
 
     constructor(options: SwitcherOptions) {
-        this.optionsList = [];
+        this.i = 0;
+        this.isDeleted = false;
+
+        this.options = [];
         this.message = options.message;
         this.requesterID = options.reuqesterID;
         this.botID = options.botID;
         this.images = options.images;
         this.isPublic = options.isPublic;
         this.getMsg = options.getMsg;
-        this.i = 0;
 
-        this.optionsList.push({
+        this.options.push({
             reaction: "⬅️",
-            callback: async (payload) => {
-                const res = Object.create(payload);
+            callback: async () => {
                 this.i = this.i - 1 < 0 ? this.images.length - 1 : this.i - 1;
-                return res;
             }
         });
 
-        this.optionsList.push({
+        this.options.push({
             reaction: "🛑",
-            callback: async (payload) => {
+            callback: async () => {
                 this.isDeleted = true;
-                if(payload.message.deletable) payload.message.delete();
-                if(payload.interval) clearInterval(payload.interval);
-                return payload;
+                if(this.message.deletable) this.message.delete();
+                if(this.interval) clearInterval(this.interval);
             }
         });
 
-        if(options.options) {
-            options.options.forEach(o => {
-                this.optionsList.push({
-                    reaction: o.reaction,
-                    callback: o.callback
-                });
-            });
-        }
+        //insert other emojis
 
-        this.optionsList.push({
+        this.options.push({
             reaction: "➡️",
-            callback: async (payload) => {
-                const res = Object.create(payload);
+            callback: async () => {
                 this.i = (this.i + 1) % this.images.length;
-                return res;
             }
         })
 
         if(options.timer) {
-            this.interval = setInterval(() => this.optionsList[this.optionsList.length-1].callback(this.getPayload()), options.timer)
+            this.interval = setInterval(() => this.options[this.options.length-1].callback(), options.timer)
         }
 
         this.collector = this.message.createReactionCollector({
@@ -83,8 +74,8 @@ export class ImagesSwitcher {
 
     private filter(reaction: MessageReaction, user: User): boolean {
         let isReaction = false;
-        for(let i = 0; i < this.optionsList.length; i++) {
-            if(reaction.emoji.name === this.optionsList[i].reaction) {
+        for(let i = 0; i < this.options.length; i++) {
+            if(reaction.emoji.name === this.options[i].reaction) {
                 isReaction = true;
                 break;
             }
@@ -93,18 +84,19 @@ export class ImagesSwitcher {
     }
 
     private async handle(reaction: MessageReaction, user: User): Promise<void> {
-        for(let i = 0; i < this.optionsList.length; i++) {
-            if(reaction.emoji.name === this.optionsList[i].reaction) {
-                await this.optionsList[i].callback(this.getPayload());
+        for(let i = 0; i < this.options.length; i++) {
+            if(reaction.emoji.name === this.options[i].reaction) {
+                await this.options[i].callback();
                 break;
             }
         }
+
         if(!this.isDeleted) this.updateImage();
     }
 
     private async setReactions(): Promise<void> {
-        for(let i = 0; i < this.optionsList.length; i++) {
-            await this.message.react(this.optionsList[i].reaction);
+        for(let i = 0; i < this.options.length; i++) {
+            await this.message.react(this.options[i].reaction);
         }
     }
 
@@ -119,20 +111,5 @@ export class ImagesSwitcher {
         
         if(this.message.deletable) this.message.delete();
         this.isDeleted = true;
-    }
-
-    private getPayload(): ImagesSwitcherFields {
-        return {
-            message: this.message,
-            requesterID: this.requesterID,
-            botID: this.botID,
-            images: this.images,
-            isPublic: this.isPublic,
-            collector: this.collector,
-            getMsg: this.getMsg,
-            interval: this.interval,
-            optionsList: this.optionsList,
-            i: this.i
-        }
     }
 }

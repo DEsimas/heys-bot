@@ -1,8 +1,10 @@
-import { Message, MessageEditOptions, ReactionCollector } from "discord.js";
+import { Message, MessageEditOptions } from "discord.js";
+import { PostRating } from "../../database/PostsRatings";
+import { UserRating } from "../../database/UsersRatings";
 
 export interface SwitcherOptions {
     message: Message;
-    reuqesterID: string;
+    requesterID: string;
     botID: string;
     images: Array<Image>;
     isPublic: boolean;
@@ -18,6 +20,8 @@ export type Image = {
 
 export interface Payload {
     message: Message,
+    postRating: PostRating | null,
+    userRating: UserRating | null,
     images: Array<Image>,
     doTags: boolean,
     i: number

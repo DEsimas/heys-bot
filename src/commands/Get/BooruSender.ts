@@ -65,11 +65,11 @@ export class BooruSender extends Sender {
 
         new ImagesSwitcher({
             message: msg,
-            reuqesterID: this.message.author.id,
+            requesterID: this.message.author.id,
             botID: this.botID,
             isPublic: this.flags.includes("--public"),
             images: images,
-            options: ["tags"],
+            options: ["tags", "like", "dislike", "unlike", "undislike"],
             timer: this.getTimer(),
             getMsg: async (payload: Payload) => {
                 const videoExtensions = [".mp4", ".mov", ".avi", ".webm", ".flv", ".mkv", ".wmv"];
@@ -91,10 +91,15 @@ export class BooruSender extends Sender {
                     return tags.slice(0, -2);
                 }
 
-                const rating = await DAO.Rating.GetPostRating(payload.images[payload.i].url);
-
                 if (isVideo()) {
-                    return { content: `**${i + 1} / ${images.length}**\n**${rating.likes} 👍 / ${rating.dislikes} 👎**\n${payload.doTags ? parseTags() : ""}`, embeds: [] };
+                    let text = `**${i + 1} / ${images.length}**`;
+                    if (payload.postRating)
+                        text += `\n**${payload.postRating.likes} 👍 / ${payload.postRating.dislikes} 👎**`;
+
+                    if (payload.doTags)
+                        text += `\n${parseTags()}`;
+
+                    return { content: text, embeds: [] };
                 }
 
                 const embed = new MessageEmbed()
@@ -102,7 +107,14 @@ export class BooruSender extends Sender {
                     .setColor("#202225")
                     .setImage(images[i].url);
 
-                return { content: `**${rating.likes} 👍 / ${rating.dislikes} 👎**\n${payload.doTags ? parseTags() : ""}`, embeds: [embed] };
+                let text = "";
+                if (payload.postRating)
+                    text += `\n**${payload.postRating.likes} 👍 / ${payload.postRating.dislikes} 👎**`;
+
+                if (payload.doTags)
+                    text += `\n${parseTags()}`;
+
+                return { content: text, embeds: [embed] };
             }
         });
     }

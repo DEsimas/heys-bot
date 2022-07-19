@@ -1,4 +1,7 @@
 import { Message, MessageReaction, ReactionCollector, User } from "discord.js";
+import { DAO } from "../../database/DAO";
+import { PostRating } from "../../database/PostsRatings";
+import { UserRating } from "../../database/UsersRatings";
 import { SwitcherOptions, Image, option, getMessageFunction, Options } from "./ImagesSwitcherTypes";
 
 export class ImagesSwitcher {
@@ -17,19 +20,24 @@ export class ImagesSwitcher {
     private readonly options: Array<option>;
     
     private i: number;
+    private requesterRating: UserRating | null;
+    private postRating: PostRating | null;;
     private isDeleted: boolean;
     private doTags: boolean;
 
     constructor(options: SwitcherOptions) {
         this.switcherLifeTime = 60 * 60 * 1000; // 1h
         this.options = [];
+        this.requesterRating = null;
+        this.postRating = null;
+        DAO.Rating.GetUserRating(options.requesterID).then(res => this.requesterRating = res)
 
         this.i = 0;
         this.isDeleted = false;
         this.doTags = false;
 
         this.message = options.message;
-        this.requesterID = options.reuqesterID;
+        this.requesterID = options.requesterID;
         this.botID = options.botID;
         this.images = options.images;
         this.isPublic = options.isPublic;
@@ -82,7 +90,13 @@ export class ImagesSwitcher {
         }
 
         if(this.functions.indexOf('like') != -1 && !this.isPublic) {
-
+            this.options.push({
+                reaction: "👍",
+                callback: async () => {
+                    console.log(this.requesterRating);
+                    console.log(this.postRating);
+                }
+            });
         }
 
         if(this.functions.indexOf('dislike') != -1 && !this.isPublic) {
@@ -143,6 +157,7 @@ export class ImagesSwitcher {
     }
 
     private async updateImage(): Promise<void> {
-        this.message.edit(await this.getMsg({ message: this.message, images: this.images, doTags: this.doTags, i: this.i }));
+        this.postRating = await DAO.Rating.GetPostRating(this.images[this.i].url);
+        this.message.edit(await this.getMsg({ message: this.message, userRating: this.requesterRating, postRating: this.postRating, images: this.images, doTags: this.doTags, i: this.i }));
     }
 }

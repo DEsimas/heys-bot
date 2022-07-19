@@ -83,7 +83,7 @@ export class DoujinSender extends Sender {
 
         new ImagesSwitcher({
             message: msg,
-            reuqesterID: this.message.author.id,
+            requesterID: this.message.author.id,
             botID: this.botID,
             images: images,
             options: [],

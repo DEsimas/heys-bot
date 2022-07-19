@@ -93,8 +93,12 @@ export class ImagesSwitcher {
             this.options.push({
                 reaction: "👍",
                 callback: async () => {
+                    if(this.requesterRating == null || this.postRating == null) return;
+
+                    const postURL = this.images[this.i].url;
                     console.log(this.requesterRating);
-                    console.log(this.postRating);
+                    if(this.requesterRating.likedPosts.indexOf(postURL) == -1 &&
+                    this.requesterRating.dislikedPosts.indexOf(postURL) == -1) await DAO.Rating.AddLike(this.requesterID, postURL);
                 }
             });
         }
@@ -158,6 +162,7 @@ export class ImagesSwitcher {
 
     private async updateImage(): Promise<void> {
         this.postRating = await DAO.Rating.GetPostRating(this.images[this.i].url);
+        this.requesterRating = await DAO.Rating.GetUserRating(this.requesterID);
         this.message.edit(await this.getMsg({ message: this.message, userRating: this.requesterRating, postRating: this.postRating, images: this.images, doTags: this.doTags, i: this.i }));
     }
 }

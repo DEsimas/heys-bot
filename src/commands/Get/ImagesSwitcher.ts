@@ -18,6 +18,7 @@ export class ImagesSwitcher {
     
     private i: number;
     private isDeleted: boolean;
+    private doTags: boolean;
 
     constructor(options: SwitcherOptions) {
         this.switcherLifeTime = 60 * 60 * 1000; // 1h
@@ -25,6 +26,7 @@ export class ImagesSwitcher {
 
         this.i = 0;
         this.isDeleted = false;
+        this.doTags = false;
 
         this.message = options.message;
         this.requesterID = options.reuqesterID;
@@ -71,7 +73,12 @@ export class ImagesSwitcher {
         });
 
         if(this.functions.indexOf("tags") != -1) {
-
+            this.options.push({
+                reaction: "📋",
+                callback: async () => {
+                    this.doTags = !this.doTags;
+                }
+            });
         }
 
         if(this.functions.indexOf('like') != -1 && !this.isPublic) {
@@ -136,6 +143,6 @@ export class ImagesSwitcher {
     }
 
     private async updateImage(): Promise<void> {
-        this.message.edit(await this.getMsg({ message: this.message, images: this.images, i: this.i }));
+        this.message.edit(await this.getMsg({ message: this.message, images: this.images, doTags: this.doTags, i: this.i }));
     }
 }

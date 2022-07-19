@@ -19,6 +19,7 @@ export type Image = {
 export interface Payload {
     message: Message,
     images: Array<Image>,
+    doTags: boolean,
     i: number
 };
 

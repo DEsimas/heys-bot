@@ -7,21 +7,24 @@ export class ImagesSwitcher {
     private readonly botID: string;
     private readonly images: Array<Image>;
     private readonly isPublic: boolean;
-    private readonly collector: ReactionCollector;
     private readonly getMsg: getMessageFunction;
-    private readonly interval: NodeJS.Timer | undefined;
-    private readonly options: Array<option>;
     
-    private readonly switcherLiveTime = 60 * 60 * 1000; // 1h
+    private readonly collector: ReactionCollector;
+    private readonly interval: NodeJS.Timer | undefined;
+    
+    private readonly switcherLifeTime: number;
+    private readonly options: Array<option>;
     
     private i: number;
     private isDeleted: boolean;
 
     constructor(options: SwitcherOptions) {
+        this.switcherLifeTime = 60 * 60 * 1000; // 1h
+        this.options = [];
+
         this.i = 0;
         this.isDeleted = false;
 
-        this.options = [];
         this.message = options.message;
         this.requesterID = options.reuqesterID;
         this.botID = options.botID;
@@ -29,6 +32,26 @@ export class ImagesSwitcher {
         this.isPublic = options.isPublic;
         this.getMsg = options.getMsg;
 
+        this.pushOptions();
+
+        if(options.timer)
+            this.interval = setInterval(() => this.options[this.options.length-1].callback(), options.timer);
+
+        this.collector = this.message.createReactionCollector({
+            dispose: true,
+            filter: (reaction, user) => (this.filter(reaction, user)),
+            time: this.switcherLifeTime
+        });
+        
+        this.setReactions().then(() => {
+            this.collector.on("collect", (reaction, user) => (this.handle(reaction, user)));
+            this.collector.on("remove", (reaction, user) => (this.handle(reaction, user)));
+            this.collector.on("end", () => (this.endHandling()));
+            this.updateImage();
+        });
+    }
+
+    private pushOptions() {
         this.options.push({
             reaction: "⬅️",
             callback: async () => {
@@ -52,24 +75,13 @@ export class ImagesSwitcher {
             callback: async () => {
                 this.i = (this.i + 1) % this.images.length;
             }
-        })
-
-        if(options.timer) {
-            this.interval = setInterval(() => this.options[this.options.length-1].callback(), options.timer)
+        });
+    }
+    
+    private async setReactions(): Promise<void> {
+        for(let i = 0; i < this.options.length; i++) {
+            await this.message.react(this.options[i].reaction);
         }
-
-        this.collector = this.message.createReactionCollector({
-            dispose: true,
-            filter: (reaction, user) => (this.filter(reaction, user)),
-            time: this.switcherLiveTime
-        });
-        
-        this.setReactions().then(() => {
-            this.collector.on("collect", (reaction, user) => (this.handle(reaction, user)));
-            this.collector.on("remove", (reaction, user) => (this.handle(reaction, user)));
-            this.collector.on("end", () => (this.endHandling()));
-            this.updateImage();
-        });
     }
 
     private filter(reaction: MessageReaction, user: User): boolean {
@@ -94,16 +106,6 @@ export class ImagesSwitcher {
         if(!this.isDeleted) this.updateImage();
     }
 
-    private async setReactions(): Promise<void> {
-        for(let i = 0; i < this.options.length; i++) {
-            await this.message.react(this.options[i].reaction);
-        }
-    }
-
-    private async updateImage(): Promise<void> {
-        this.message.edit(await this.getMsg({ message: this.message, images: this.images, i: this.i }));
-    }
-
     private endHandling(): void {
         if(this.interval) {
             clearInterval(this.interval);
@@ -111,5 +113,9 @@ export class ImagesSwitcher {
         
         if(this.message.deletable) this.message.delete();
         this.isDeleted = true;
+    }
+
+    private async updateImage(): Promise<void> {
+        this.message.edit(await this.getMsg({ message: this.message, images: this.images, i: this.i }));
     }
 }

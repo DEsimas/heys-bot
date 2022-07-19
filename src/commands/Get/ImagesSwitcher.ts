@@ -1,5 +1,5 @@
 import { Message, MessageReaction, ReactionCollector, User } from "discord.js";
-import { SwitcherOptions, Image, option, getMessageFunction } from "./ImagesSwitcherTypes";
+import { SwitcherOptions, Image, option, getMessageFunction, Options } from "./ImagesSwitcherTypes";
 
 export class ImagesSwitcher {
     private readonly message: Message;
@@ -7,6 +7,7 @@ export class ImagesSwitcher {
     private readonly botID: string;
     private readonly images: Array<Image>;
     private readonly isPublic: boolean;
+    private readonly functions: Array<Options>;
     private readonly getMsg: getMessageFunction;
     
     private readonly collector: ReactionCollector;
@@ -30,6 +31,7 @@ export class ImagesSwitcher {
         this.botID = options.botID;
         this.images = options.images;
         this.isPublic = options.isPublic;
+        this.functions = options.options;
         this.getMsg = options.getMsg;
 
         this.pushOptions();
@@ -68,7 +70,25 @@ export class ImagesSwitcher {
             }
         });
 
-        //insert other emojis
+        if(this.functions.indexOf("tags") != -1) {
+
+        }
+
+        if(this.functions.indexOf('like') != -1 && !this.isPublic) {
+
+        }
+
+        if(this.functions.indexOf('dislike') != -1 && !this.isPublic) {
+            
+        }
+
+        if(this.functions.indexOf('unlike') != -1 && !this.isPublic) {
+            
+        }
+
+        if(this.functions.indexOf('undislike') != -1 && !this.isPublic) {
+            
+        }
 
         this.options.push({
             reaction: "➡️",

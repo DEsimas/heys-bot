@@ -36,4 +36,4 @@ export interface option {
     callback: optionCallback;
 };
 
-export type Options = "tags" | "like" | "unlike" | "dislike" | "undislike";
+export type Options = "tags" | "like" | "dislike" | "removeReaction";

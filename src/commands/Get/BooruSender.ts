@@ -69,7 +69,7 @@ export class BooruSender extends Sender {
             botID: this.botID,
             isPublic: this.flags.includes("--public"),
             images: images,
-            options: ["tags", "like", "dislike", "unlike", "undislike"],
+            options: ["tags", "like", "dislike", "removeReaction"],
             timer: this.getTimer(),
             getMsg: async (payload: Payload) => {
                 const videoExtensions = [".mp4", ".mov", ".avi", ".webm", ".flv", ".mkv", ".wmv"];

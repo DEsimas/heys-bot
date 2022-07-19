@@ -103,6 +103,20 @@ export class ImagesSwitcher {
             });
         }
 
+        if(this.functions.indexOf("removeReaction") != -1 && !this.isPublic) {
+            this.options.push({
+                reaction: "✊",
+                callback: async () => {
+                    if(this.requesterRating == null || this.postRating == null) return;
+
+                    const postURL = this.images[this.i].url;
+
+                    if(this.requesterRating.likedPosts.indexOf(postURL) != -1) await DAO.Rating.RemoveLike(this.requesterID, postURL);
+                    if(this.requesterRating.dislikedPosts.indexOf(postURL) != -1) await DAO.Rating.RemoveDislike(this.requesterID, postURL);
+                }
+            });
+        }
+
         if(this.functions.indexOf('dislike') != -1 && !this.isPublic) {
             this.options.push({
                 reaction: "👎",

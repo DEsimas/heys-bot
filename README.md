@@ -62,7 +62,6 @@ bot.start();
 
 ## Known issues:
  <ul>
-  <li>Sometimes embed stops reacting to emojis</li>
   <li>Large files can't be displayed</li>
   <li>A lot of links from realbooru are in wrong format</li>
 </ul> 

@@ -94,7 +94,7 @@ export class BooruSender extends Sender {
                 const rating = await DAO.Rating.GetPostRating(payload.images[payload.i].url);
 
                 if (isVideo()) {
-                    return { content: `**${i + 1} / ${images.length}**\n**${rating.likes} 👍 / ${rating.dislikes} 👎**`, embeds: [] };
+                    return { content: `**${i + 1} / ${images.length}**\n**${rating.likes} 👍 / ${rating.dislikes} 👎**\n${payload.doTags ? parseTags() : ""}`, embeds: [] };
                 }
 
                 const embed = new MessageEmbed()
@@ -102,7 +102,7 @@ export class BooruSender extends Sender {
                     .setColor("#202225")
                     .setImage(images[i].url);
 
-                return { content: `**${rating.likes} 👍 / ${rating.dislikes} 👎**`, embeds: [embed] };
+                return { content: `**${rating.likes} 👍 / ${rating.dislikes} 👎**\n${payload.doTags ? parseTags() : ""}`, embeds: [embed] };
             }
         });
     }

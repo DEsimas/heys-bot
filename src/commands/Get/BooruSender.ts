@@ -99,6 +99,13 @@ export class BooruSender extends Sender {
                     if (payload.doTags)
                         text += `\n${parseTags()}`;
 
+                    if (payload.userRating) {
+                        text += `\nRequester rating: `
+                        if (payload.userRating.likedPosts.indexOf(payload.images[payload.i].url) != -1) text += "👍";
+                        else if (payload.userRating.dislikedPosts.indexOf(payload.images[payload.i].url) != -1) text += "👎";
+                        else text += "none";
+                    }
+
                     return { content: text, embeds: [] };
                 }
 
@@ -113,6 +120,13 @@ export class BooruSender extends Sender {
 
                 if (payload.doTags)
                     text += `\n${parseTags()}`;
+
+                if (payload.userRating) {
+                    text += `\nRequester rating: `
+                    if (payload.userRating.likedPosts.indexOf(payload.images[payload.i].url) != -1) text += "👍";
+                    else if (payload.userRating.dislikedPosts.indexOf(payload.images[payload.i].url) != -1) text += "👎";
+                    else text += "none";
+                }
 
                 return { content: text, embeds: [embed] };
             }

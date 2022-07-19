@@ -96,7 +96,7 @@ export class ImagesSwitcher {
                     if(this.requesterRating == null || this.postRating == null) return;
 
                     const postURL = this.images[this.i].url;
-                    console.log(this.requesterRating);
+
                     if(this.requesterRating.likedPosts.indexOf(postURL) == -1 &&
                     this.requesterRating.dislikedPosts.indexOf(postURL) == -1) await DAO.Rating.AddLike(this.requesterID, postURL);
                 }
@@ -104,15 +104,17 @@ export class ImagesSwitcher {
         }
 
         if(this.functions.indexOf('dislike') != -1 && !this.isPublic) {
-            
-        }
+            this.options.push({
+                reaction: "👎",
+                callback: async () => {
+                    if(this.requesterRating == null || this.postRating == null) return;
 
-        if(this.functions.indexOf('unlike') != -1 && !this.isPublic) {
-            
-        }
+                    const postURL = this.images[this.i].url;
 
-        if(this.functions.indexOf('undislike') != -1 && !this.isPublic) {
-            
+                    if(this.requesterRating.likedPosts.indexOf(postURL) == -1 &&
+                    this.requesterRating.dislikedPosts.indexOf(postURL) == -1) await DAO.Rating.AddDislike(this.requesterID, postURL);
+                }
+            });
         }
 
         this.options.push({
